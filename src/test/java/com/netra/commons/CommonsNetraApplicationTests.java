@@ -1,4 +1,4 @@
-package com.netra.commons_netra;
+package com.netra.commons;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
