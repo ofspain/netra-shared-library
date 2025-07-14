@@ -1,6 +1,6 @@
-package com.netra.commons.models.contracts;
+package com.netra.commons.contracts;
 
-import com.netra.commons.models.enums.DomainType;
+import com.netra.commons.contracts.enums.DomainType;
 
 public interface Domain extends Nameable, DisableAble{
 

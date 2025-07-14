@@ -1,9 +1,8 @@
 package com.netra.commons.models;
 
-import com.netra.commons.models.contracts.DisableAble;
-import com.netra.commons.models.contracts.Disputant;
-import com.netra.commons.models.contracts.Domain;
-import com.netra.commons.models.enums.DisputantType;
+import com.netra.commons.contracts.DisableAble;
+import com.netra.commons.contracts.Disputant;
+import com.netra.commons.contracts.enums.DisputantType;
 import lombok.Data;
 
 @Data

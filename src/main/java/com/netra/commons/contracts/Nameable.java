@@ -1,4 +1,4 @@
-package com.netra.commons.models.contracts;
+package com.netra.commons.contracts;
 
 public interface Nameable {
     String getName();

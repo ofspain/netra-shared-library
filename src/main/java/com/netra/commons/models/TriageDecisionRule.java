@@ -1,8 +1,8 @@
 package com.netra.commons.models;
 
-import com.netra.commons.models.contracts.DisableAble;
-import com.netra.commons.models.contracts.Nameable;
-import com.netra.commons.models.enums.DisputeMode;
+import com.netra.commons.contracts.DisableAble;
+import com.netra.commons.contracts.Nameable;
+import com.netra.commons.contracts.enums.DisputeMode;
 import lombok.Data;
 
 /**
@@ -13,7 +13,7 @@ import lombok.Data;
  */
 
 @Data
-public class TriageDecisionRule extends BaseEntity implements Nameable, DisableAble {
+public class TriageDecisionRule extends BaseEntity implements Nameable, DisableAble{
     private String name;
     private String description;
     private Boolean disabled;

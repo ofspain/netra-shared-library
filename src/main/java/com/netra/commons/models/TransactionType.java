@@ -1,14 +1,14 @@
 package com.netra.commons.models;
 
-import com.netra.commons.models.contracts.DisableAble;
-import com.netra.commons.models.contracts.Nameable;
-import com.netra.commons.models.enums.TransactionChannel;
+import com.netra.commons.contracts.DisableAble;
+import com.netra.commons.contracts.Nameable;
+import com.netra.commons.contracts.enums.TransactionChannel;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class TransactionType extends BaseEntity implements Nameable, DisableAble {
+public class TransactionType extends BaseEntity implements Nameable, DisableAble{
     //unique
     private String name;
 

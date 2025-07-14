@@ -1,4 +1,4 @@
-package com.netra.commons.models.enums;
+package com.netra.commons.contracts.enums;
 
 public enum DisputeMode {
     CHARGEBACK,

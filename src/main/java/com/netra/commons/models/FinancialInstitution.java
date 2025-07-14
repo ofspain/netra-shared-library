@@ -1,8 +1,7 @@
 package com.netra.commons.models;
 
-import com.netra.commons.models.contracts.Domain;
-import com.netra.commons.models.enums.DomainType;
-import lombok.Data;
+import com.netra.commons.contracts.Domain;
+import com.netra.commons.contracts.enums.DomainType;
 
 
 public class FinancialInstitution   extends BaseEntity implements Domain{

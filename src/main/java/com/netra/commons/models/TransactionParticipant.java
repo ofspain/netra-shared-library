@@ -1,7 +1,7 @@
 package com.netra.commons.models;
 
-import com.netra.commons.models.contracts.Domain;
-import com.netra.commons.models.enums.TransactionParticipationRole;
+import com.netra.commons.contracts.Domain;
+import com.netra.commons.contracts.enums.TransactionParticipationRole;
 
 import java.time.LocalDateTime;
 

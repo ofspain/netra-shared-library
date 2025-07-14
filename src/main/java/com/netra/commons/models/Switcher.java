@@ -1,7 +1,9 @@
 package com.netra.commons.models;
 
-import com.netra.commons.models.contracts.Domain;
-import com.netra.commons.models.enums.DomainType;
+import com.netra.commons.contracts.Domain;
+import com.netra.commons.contracts.enums.DomainType;
+
+import java.util.List;
 
 public class Switcher   extends BaseEntity implements Domain {
     private String name;
@@ -9,6 +11,8 @@ public class Switcher   extends BaseEntity implements Domain {
     private String domainCode;
 
     private Boolean disabled;
+
+    private List<TransactionSource> transactionSources;
 
     @Override
     public Boolean getDisabled() {
