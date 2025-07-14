@@ -5,7 +5,7 @@ import com.netra.commons.models.enums.DomainType;
 import lombok.Data;
 
 
-public class FinancialInstitution implements Domain {
+public class FinancialInstitution   extends BaseEntity implements Domain{
     private String name;
     private String code;
     private String domainCode;
@@ -40,7 +40,7 @@ public class FinancialInstitution implements Domain {
         this.domainCode = domainCode;
     }
 
-    public DomainType getType() {
+    public DomainType getDomainType() {
         return DomainType.FINANCIAL_INSTITUTION;
     }
 

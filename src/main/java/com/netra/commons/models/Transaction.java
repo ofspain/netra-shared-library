@@ -1,4 +1,6 @@
 package com.netra.commons.models;
 
-public class Transaction {
+import com.netra.commons.models.contracts.Auditable;
+
+public class Transaction extends BaseEntity implements Auditable {
 }

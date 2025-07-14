@@ -3,12 +3,18 @@ package com.netra.commons.models.contracts;
 public interface DisableAble {
 
     Boolean getDisabled();
+    void setDisabled(Boolean disable);
 
-    void disable();
+    default void disable(){
+        setDisabled(true);
+    }
 
-    void enable();
+    default void enable(){
+        setDisabled(false);
+    }
 
     default Boolean isEnabled(){
+
         return !getDisabled();
     }
 }
