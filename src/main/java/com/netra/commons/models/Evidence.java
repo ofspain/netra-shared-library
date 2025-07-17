@@ -1,6 +1,6 @@
 package com.netra.commons.models;
 
-import com.netra.commons.contracts.enums.EvidenceType;
+import com.netra.commons.enums.EvidenceType;
 
 public class Evidence extends BaseEntity {
     private EvidenceType evidenceType;

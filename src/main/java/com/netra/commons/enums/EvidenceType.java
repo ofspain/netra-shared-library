@@ -1,4 +1,4 @@
-package com.netra.commons.contracts.enums;
+package com.netra.commons.enums;
 
 public enum EvidenceType {
     DEBIT_ALERT,

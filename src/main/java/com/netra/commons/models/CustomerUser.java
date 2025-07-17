@@ -2,7 +2,7 @@ package com.netra.commons.models;
 
 import com.netra.commons.contracts.DisableAble;
 import com.netra.commons.contracts.Disputant;
-import com.netra.commons.contracts.enums.DisputantType;
+import com.netra.commons.enums.DisputantType;
 import lombok.Data;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.netra.commons.models;
 
-import com.netra.commons.contracts.enums.AccountType;
+import com.netra.commons.enums.AccountType;
 
 public class AccountDetail extends BaseEntity{
     private String registeredPhone;
