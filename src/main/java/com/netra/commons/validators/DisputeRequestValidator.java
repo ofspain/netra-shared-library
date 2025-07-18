@@ -12,6 +12,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class DisputeRequestValidator implements ConstraintValidator<ValidDisputeRequest, CreateDisputeRequest> {
@@ -26,14 +27,6 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
 
         // Utility: disable default messages
         context.disableDefaultConstraintViolation();
-
-        // Rule 1: Must have ISSUER in participants
-        if (!hasParticipantWithRole(request.getParticipants(), TransactionParticipationRole.ISSUER)) {
-            context.buildConstraintViolationWithTemplate("At least one ISSUER participant is required.")
-                    .addPropertyNode("participants")
-                    .addConstraintViolation();
-            valid = false;
-        }
 
         // Rule 2: If PARTIAL, then disputedAmount must be valid
         DisputeAmountType disputeAmountType = request.getDisputeAmountType();
@@ -59,6 +52,13 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
 
         switch (type) {
             case CUSTOMERUSER:
+                if (!hasParticipantWithRole(request.getParticipants(), TransactionParticipationRole.ISSUER)) {
+                    context.buildConstraintViolationWithTemplate("At least one ISSUER participant is required for CUSTOMERUSER.")
+                            .addPropertyNode("participants")
+                            .addConstraintViolation();
+                    valid = false;
+                }
+
                 if (request.getAccountDetail() == null) {
                     context.buildConstraintViolationWithTemplate("Account details are required for CUSTOMERUSER.")
                             .addPropertyNode("accountDetail")
@@ -88,7 +88,7 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
                 break;
         }
 
-        // Rule 5: Basic transaction validation
+        // Rule 4: Basic transaction validation
         Transaction txn = request.getTransaction();
         if (txn == null) {
             context.buildConstraintViolationWithTemplate("Transaction is required.")
@@ -110,6 +110,12 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
             }
             if (txn.getTransactionDate() == null) {
                 context.buildConstraintViolationWithTemplate("Transaction date is required.")
+                        .addPropertyNode("transaction.transactionDate")
+                        .addConstraintViolation();
+                valid = false;
+            }
+            if (txn.getTransactionDate().toLocalDate().isAfter(LocalDate.now())) {
+                context.buildConstraintViolationWithTemplate("Transaction date cannot be in the future.")
                         .addPropertyNode("transaction.transactionDate")
                         .addConstraintViolation();
                 valid = false;
