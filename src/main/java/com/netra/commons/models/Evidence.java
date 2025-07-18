@@ -1,7 +1,9 @@
 package com.netra.commons.models;
 
 import com.netra.commons.enums.EvidenceType;
+import lombok.Data;
 
+@Data
 public class Evidence extends BaseEntity {
     private EvidenceType evidenceType;
     private String disputeCode;

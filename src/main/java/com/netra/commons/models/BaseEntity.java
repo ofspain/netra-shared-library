@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 @Data
 public class BaseEntity {
     private Long id;
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 }

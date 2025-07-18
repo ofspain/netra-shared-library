@@ -5,6 +5,7 @@ public enum DisputeState {
     DECLINE,
     EXPIRE,
     WITHDRAW,
+    ESCALATED,
     CLOSED,
     REOPEN;
 }

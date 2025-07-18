@@ -3,6 +3,7 @@ package com.netra.commons.requests;
 import com.netra.commons.contracts.Disputant;
 import com.netra.commons.enums.DisputeMode;
 import com.netra.commons.enums.DisputeAmountType;
+import com.netra.commons.models.AccountDetail;
 import com.netra.commons.models.Evidence;
 import com.netra.commons.models.Transaction;
 import com.netra.commons.models.TransactionParticipant;
@@ -22,5 +23,9 @@ public class CreateDisputeRequest {
     private DisputeMode mode; // CHARGEBACK, REFUND, GOOD_FAITH, etc.
     private String note; // Free-text description of the issue
     private BigDecimal disputedAmount;
+
+    private AccountDetail accountDetail; //for customeruser
+
+
 
 }

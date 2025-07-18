@@ -31,7 +31,7 @@ public class Switcher   extends BaseEntity implements Domain{
 
     @Override
     public DomainType getDomainType() {
-        return DomainType.FINANCIAL_INSTITUTION;
+        return DomainType.SWITCH;
     }
 
     @Override
