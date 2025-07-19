@@ -4,10 +4,8 @@ import com.netra.commons.enums.TransactionParticipationRole;
 import com.netra.commons.models.Transaction;
 import com.netra.commons.models.TransactionParticipant;
 import com.netra.commons.requests.CreateDisputeRequest;
+import com.netra.commons.util.SecureHashingUtil;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -32,23 +30,7 @@ public class DisputeRequestUtil {
                 issuer
         );
 
-        return sha256(canonical);
-    }
-
-    private static String sha256(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(input.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 not available", e);
-        }
+        return SecureHashingUtil.sha256(canonical);
     }
 
 }

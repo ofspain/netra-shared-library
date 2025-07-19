@@ -41,11 +41,144 @@ public class EndpointConfig extends BaseEntity {
 
     private String description;
 
+    private String proxyHost;
+    private Integer proxyPort;
+    private String proxyUsername;
+
+
     // ========= ENUMS ========= //
 
     public enum ProtocolType {
         HTTP,
-        HTTPS
+        HTTPS,
+
+        SOCKS
+
+    }
+
+    public enum ProxyType {
+        HTTP,
+        SOCKS
+    }
+
+    public String getDomainCode() {
+        return domainCode;
+    }
+
+    public void setDomainCode(String domainCode) {
+        this.domainCode = domainCode;
+    }
+
+    public DomainType getDomainType() {
+        return domainType;
+    }
+
+    public void setDomainType(DomainType domainType) {
+        this.domainType = domainType;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public boolean isUseProxy() {
+        return useProxy;
+    }
+
+    public void setUseProxy(boolean useProxy) {
+        this.useProxy = useProxy;
+    }
+
+    public boolean isRequiresAuth() {
+        return requiresAuth;
+    }
+
+    public void setRequiresAuth(boolean requiresAuth) {
+        this.requiresAuth = requiresAuth;
+    }
+
+    public AuthType getAuthType() {
+        return authType;
+    }
+
+    public void setAuthType(AuthType authType) {
+        this.authType = authType;
+    }
+
+    public int getTimeoutMillis() {
+        return timeoutMillis;
+    }
+
+    public void setTimeoutMillis(int timeoutMillis) {
+        this.timeoutMillis = timeoutMillis;
+    }
+
+    public ProtocolType getProtocolType() {
+        return protocolType;
+    }
+
+    public void setProtocolType(ProtocolType protocolType) {
+        this.protocolType = protocolType;
+    }
+
+    public String getUniqueTransactionParams() {
+        return uniqueTransactionParams;
+    }
+
+    public void setUniqueTransactionParams(String uniqueTransactionParams) {
+        this.uniqueTransactionParams = uniqueTransactionParams;
+    }
+
+    public String getUniqueTransactionUrl() {
+        return uniqueTransactionUrl;
+    }
+
+    public void setUniqueTransactionUrl(String uniqueTransactionUrl) {
+        this.uniqueTransactionUrl = uniqueTransactionUrl;
+    }
+
+    public List<EndpointHeader> getUniqueTransactionHeaders() {
+        return uniqueTransactionHeaders;
+    }
+
+    public void setUniqueTransactionHeaders(List<EndpointHeader> uniqueTransactionHeaders) {
+        this.uniqueTransactionHeaders = uniqueTransactionHeaders;
+    }
+
+    public String getMultipleTransactionParams() {
+        return multipleTransactionParams;
+    }
+
+    public void setMultipleTransactionParams(String multipleTransactionParams) {
+        this.multipleTransactionParams = multipleTransactionParams;
+    }
+
+    public String getMultipleTransactionUrl() {
+        return multipleTransactionUrl;
+    }
+
+    public void setMultipleTransactionUrl(String multipleTransactionUrl) {
+        this.multipleTransactionUrl = multipleTransactionUrl;
+    }
+
+    public List<EndpointHeader> getMultipleTransactionHeaders() {
+        return multipleTransactionHeaders;
+    }
+
+    public void setMultipleTransactionHeaders(List<EndpointHeader> multipleTransactionHeaders) {
+        this.multipleTransactionHeaders = multipleTransactionHeaders;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public enum AuthType {
@@ -98,6 +231,49 @@ public class EndpointConfig extends BaseEntity {
     public void setMultipleTransactionParamList(List<String> params) {
         this.multipleTransactionParams = joinParams(params, ParamSeparator.MULTIPLE_PARAM_SEPARATOR);
     }
+
+    public String getProxyHost() {
+        return proxyHost;
+    }
+
+    public void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
+    }
+
+    public Integer getProxyPort() {
+        return proxyPort;
+    }
+
+    public void setProxyPort(Integer proxyPort) {
+        this.proxyPort = proxyPort;
+    }
+
+    public String getProxyUsername() {
+        return proxyUsername;
+    }
+
+    public void setProxyUsername(String proxyUsername) {
+        this.proxyUsername = proxyUsername;
+    }
+
+    public String getProxyPassword() {
+        return proxyPassword;
+    }
+
+    public void setProxyPassword(String proxyPassword) {
+        this.proxyPassword = proxyPassword;
+    }
+
+    public ProxyType getProxyType() {
+        return proxyType;
+    }
+
+    public void setProxyType(ProxyType proxyType) {
+        this.proxyType = proxyType;
+    }
+
+    private String proxyPassword;
+    private ProxyType proxyType = ProxyType.HTTP; // Optional enum
 
     // ========= Getters and Setters ========= //
 
