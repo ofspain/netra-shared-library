@@ -1,283 +1,168 @@
 package com.netra.commons.models;
 
 import com.netra.commons.enums.DomainType;
+import lombok.Data;
 
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.util.Map;
 
+@Data
 public class EndpointConfig extends BaseEntity {
 
+    // Basic identity
+    private String domainCode;                     // e.g. "MONNIFY", "BANK_GTB"
+    private DomainType domainType;                 // e.g. BANK, WALLET, FX_PROVIDER
+    private String description;                    // e.g. Endpoint for monify
 
-    private String domainCode; // e.g. "BANK_GTB", "MONNIFY", etc.
-
-    private DomainType domainType;
-
-    private String baseUrl;
-
+    // Base communication setup
+    private String baseUrl;                        // e.g. https://api.example.com
+    private int timeoutMillis = 5000;
     private boolean useProxy;
+    private ProxyConfig proxy;
 
+    // Auth
     private boolean requiresAuth;
-
     private AuthType authType = AuthType.NONE;
 
-    private int timeoutMillis;
+    // Unique transaction endpoint
+    private EndpointDetail uniqueTransaction;
 
-    private ProtocolType protocolType = ProtocolType.HTTPS; // default to HTTPS
+    // Bulk/multiple transaction endpoint
+    private EndpointDetail multipleTransaction;
 
-    // Stored as a single delimited string in DB
-    private String uniqueTransactionParams;
+    private String requestBodyTemplate;
 
-    private String uniqueTransactionUrl;
+    // Resilience config
+    private RetryConfig retryConfig;
+    private FallbackConfig fallbackConfig;
 
-    // To be manually hydrated when needed
-    private List<EndpointHeader> uniqueTransactionHeaders;
-
-    private String multipleTransactionParams;
-
-    private String multipleTransactionUrl;
-
-    // To be manually hydrated when needed
-    private List<EndpointHeader> multipleTransactionHeaders;
-
-    private String description;
-
-    private String proxyHost;
-    private Integer proxyPort;
-    private String proxyUsername;
+    // Enums
+    public enum AuthType {
+        NONE, API_KEY, BEARER_TOKEN, BASIC, MTLS
+    }
 
 
-    // ========= ENUMS ========= //
+    public enum FallbackType {
+        STATIC_RESPONSE, REDIRECT_ENDPOINT, EXCEPTION
+    }
 
-    public enum ProtocolType {
-        HTTP,
-        HTTPS,
 
-        SOCKS
+    // ========== Nested Classes ========== //
 
+    @Data
+    public static class RetryConfig {
+        private int maxAttempts = 3;
+        private long initialDelayMillis = 200;
+        private double multiplier = 2.0;
+        private long maxDelayMillis = 2000;
+    }
+
+    @Data
+    public static class FallbackConfig {
+        private FallbackType type;
+        private Map<String, Object> value;
+    }
+
+    @Data
+    public static class ProxyConfig {
+        private String host;
+        private Integer port;
+        private String username;
+        //todo: passwords are stored as encrypted value in db, and decrypted for use at runtime
+        private String password;
+        private ProxyType type = ProxyType.HTTP;
     }
 
     public enum ProxyType {
-        HTTP,
-        SOCKS
+        HTTP, SOCKS
     }
 
-    public String getDomainCode() {
-        return domainCode;
+    public enum HTTPMethod {
+        GET, POST // Only for read-type access
     }
 
-    public void setDomainCode(String domainCode) {
-        this.domainCode = domainCode;
+    @Data
+    public static class EndpointDetail {
+        private String url;
+        private HTTPMethod method;
+        private List<String> pathParamKeys;    // Names only
+        private List<String> queryParamKeys;
+        private List<EndpointHeader> headers;
     }
 
-    public DomainType getDomainType() {
-        return domainType;
-    }
+    @Data
+    public static class EndpointHeader {
+        private String name;
+        private String value;
+        private boolean dynamic;
 
-    public void setDomainType(DomainType domainType) {
-        this.domainType = domainType;
-    }
-
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    public boolean isUseProxy() {
-        return useProxy;
-    }
-
-    public void setUseProxy(boolean useProxy) {
-        this.useProxy = useProxy;
-    }
-
-    public boolean isRequiresAuth() {
-        return requiresAuth;
-    }
-
-    public void setRequiresAuth(boolean requiresAuth) {
-        this.requiresAuth = requiresAuth;
-    }
-
-    public AuthType getAuthType() {
-        return authType;
-    }
-
-    public void setAuthType(AuthType authType) {
-        this.authType = authType;
-    }
-
-    public int getTimeoutMillis() {
-        return timeoutMillis;
-    }
-
-    public void setTimeoutMillis(int timeoutMillis) {
-        this.timeoutMillis = timeoutMillis;
-    }
-
-    public ProtocolType getProtocolType() {
-        return protocolType;
-    }
-
-    public void setProtocolType(ProtocolType protocolType) {
-        this.protocolType = protocolType;
-    }
-
-    public String getUniqueTransactionParams() {
-        return uniqueTransactionParams;
-    }
-
-    public void setUniqueTransactionParams(String uniqueTransactionParams) {
-        this.uniqueTransactionParams = uniqueTransactionParams;
-    }
-
-    public String getUniqueTransactionUrl() {
-        return uniqueTransactionUrl;
-    }
-
-    public void setUniqueTransactionUrl(String uniqueTransactionUrl) {
-        this.uniqueTransactionUrl = uniqueTransactionUrl;
-    }
-
-    public List<EndpointHeader> getUniqueTransactionHeaders() {
-        return uniqueTransactionHeaders;
-    }
-
-    public void setUniqueTransactionHeaders(List<EndpointHeader> uniqueTransactionHeaders) {
-        this.uniqueTransactionHeaders = uniqueTransactionHeaders;
-    }
-
-    public String getMultipleTransactionParams() {
-        return multipleTransactionParams;
-    }
-
-    public void setMultipleTransactionParams(String multipleTransactionParams) {
-        this.multipleTransactionParams = multipleTransactionParams;
-    }
-
-    public String getMultipleTransactionUrl() {
-        return multipleTransactionUrl;
-    }
-
-    public void setMultipleTransactionUrl(String multipleTransactionUrl) {
-        this.multipleTransactionUrl = multipleTransactionUrl;
-    }
-
-    public List<EndpointHeader> getMultipleTransactionHeaders() {
-        return multipleTransactionHeaders;
-    }
-
-    public void setMultipleTransactionHeaders(List<EndpointHeader> multipleTransactionHeaders) {
-        this.multipleTransactionHeaders = multipleTransactionHeaders;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public enum AuthType {
-        NONE,
-        API_KEY,
-        BEARER_TOKEN,
-        BASIC,
-        MTLS
-    }
-
-    public enum ParamSeparator {
-        UNIQUE_PARAM_SEPARATOR("<UTPS>"),
-        MULTIPLE_PARAM_SEPARATOR("<MTPS>");
-
-        private final String separator;
-
-        ParamSeparator(String separator) {
-            this.separator = separator;
-        }
-
-        public String getSeparator() {
-            return separator;
+        public EndpointHeader(String name, String value, boolean dynamic){
+            this.name = name;
+            this.value = value;
+            this.dynamic = dynamic;
         }
     }
-
-    // ========= STATIC HELPERS ========= //
-
-    public static List<String> parseParams(String paramStr, ParamSeparator separatorType) {
-        if (paramStr == null || paramStr.isEmpty()) return Collections.emptyList();
-        return Arrays.asList(paramStr.split(Pattern.quote(separatorType.separator)));
-    }
-
-    public static String joinParams(List<String> params, ParamSeparator separatorType) {
-        if (params == null || params.isEmpty()) return "";
-        return String.join(separatorType.separator, params);
-    }
-
-    public List<String> getUniqueTransactionParamList() {
-        return parseParams(this.uniqueTransactionParams, ParamSeparator.UNIQUE_PARAM_SEPARATOR);
-    }
-
-    public void setUniqueTransactionParamList(List<String> params) {
-        this.uniqueTransactionParams = joinParams(params, ParamSeparator.UNIQUE_PARAM_SEPARATOR);
-    }
-
-    public List<String> getMultipleTransactionParamList() {
-        return parseParams(this.multipleTransactionParams, ParamSeparator.MULTIPLE_PARAM_SEPARATOR);
-    }
-
-    public void setMultipleTransactionParamList(List<String> params) {
-        this.multipleTransactionParams = joinParams(params, ParamSeparator.MULTIPLE_PARAM_SEPARATOR);
-    }
-
-    public String getProxyHost() {
-        return proxyHost;
-    }
-
-    public void setProxyHost(String proxyHost) {
-        this.proxyHost = proxyHost;
-    }
-
-    public Integer getProxyPort() {
-        return proxyPort;
-    }
-
-    public void setProxyPort(Integer proxyPort) {
-        this.proxyPort = proxyPort;
-    }
-
-    public String getProxyUsername() {
-        return proxyUsername;
-    }
-
-    public void setProxyUsername(String proxyUsername) {
-        this.proxyUsername = proxyUsername;
-    }
-
-    public String getProxyPassword() {
-        return proxyPassword;
-    }
-
-    public void setProxyPassword(String proxyPassword) {
-        this.proxyPassword = proxyPassword;
-    }
-
-    public ProxyType getProxyType() {
-        return proxyType;
-    }
-
-    public void setProxyType(ProxyType proxyType) {
-        this.proxyType = proxyType;
-    }
-
-    private String proxyPassword;
-    private ProxyType proxyType = ProxyType.HTTP; // Optional enum
-
-    // ========= Getters and Setters ========= //
-
-    // (Omitted here for brevity — generate with your IDE or Lombok if allowed)
 
 }
 
+/**
+ * 📐 A schema DDL to create the table
+ * *
+ *
+ CREATE TABLE endpoint_config (
+ id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+ -- Basic identity
+ domain_code VARCHAR(100) NOT NULL UNIQUE,
+ domain_type VARCHAR(50) NOT NULL,
+ description TEXT,
+
+ -- Core comm setup
+ base_url TEXT NOT NULL,
+ timeout_millis INT NOT NULL DEFAULT 5000,
+ use_proxy BOOLEAN NOT NULL DEFAULT false,
+
+ -- Proxy
+ proxy_config JSONB,
+
+ -- Auth
+ requires_auth BOOLEAN NOT NULL DEFAULT false,
+ auth_type VARCHAR(50) NOT NULL DEFAULT 'NONE',
+
+ -- Request template
+ request_body_template TEXT,
+
+ -- Endpoint detail
+ unique_transaction JSONB,
+ multiple_transaction JSONB,
+
+ -- Resilience registry
+ retry_config JSONB,
+ fallback_config JSONB,
+
+ -- Metadata
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+ );
+
+ *
+ * CREATE INDEX idx_endpoint_config_domain_code ON endpoint_config(domain_code);
+ * CREATE INDEX idx_endpoint_config_domain_type ON endpoint_config(domain_type);
+ * CREATE INDEX idx_endpoint_config_auth_type ON endpoint_config(auth_type);
+ *
+ * EASY JSON LOOKUP
+ *
+ * -- For fast lookup by proxy type, auth header name, etc.
+ * CREATE INDEX idx_endpoint_config_proxy_json ON endpoint_config USING GIN (proxy);
+ * CREATE INDEX idx_endpoint_config_unique_txn_json ON endpoint_config USING GIN (unique_transaction);
+ *
+ *
+ *
+ * ✅ Java model ↔ DB (serialization logic)
+ *
+ * ✅ Sample insert via Spring or SQL
+ *
+ * ✅ JSONB validation at persistence layer
+ *
+ * ✅ DDL for a smaller table just to store reusable headers (if needed)
+ */

@@ -1,6 +1,6 @@
 package com.netra.commons.validators;
 
-import com.netra.commons.annotations.ValidDisputeRequest;
+import com.netra.commons.validators.annotations.ValidDisputeRequest;
 import com.netra.commons.contracts.Disputant;
 import com.netra.commons.enums.DisputantType;
 import com.netra.commons.enums.DisputeAmountType;
@@ -20,7 +20,7 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
     @Override
     public boolean isValid(CreateDisputeRequest request, ConstraintValidatorContext context) {
         if (request == null) {
-            return false;
+            throw new IllegalArgumentException("CreateDisputeRequest cannot be null");
         }
 
         boolean valid = true;

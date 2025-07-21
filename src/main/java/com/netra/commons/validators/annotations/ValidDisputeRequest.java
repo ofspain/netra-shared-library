@@ -1,4 +1,4 @@
-package com.netra.commons.annotations;
+package com.netra.commons.validators.annotations;
 
 import com.netra.commons.validators.DisputeRequestValidator;
 import jakarta.validation.Constraint;
