@@ -1,6 +1,7 @@
 package com.netra.commons.requests;
 
 import com.netra.commons.contracts.Disputant;
+import com.netra.commons.enums.ApplicationChannel;
 import com.netra.commons.enums.DisputeMode;
 import com.netra.commons.enums.DisputeAmountType;
 import com.netra.commons.models.AccountDetail;
@@ -25,6 +26,8 @@ public class CreateDisputeRequest {
     private BigDecimal disputedAmount;
 
     private AccountDetail accountDetail; //for customeruser
+
+    private ApplicationChannel applicationChannel;
 
 
 

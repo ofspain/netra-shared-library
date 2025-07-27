@@ -17,6 +17,4 @@ public class TransactionType extends BaseEntity implements Nameable, DisableAble
     private List<TransactionChannel> channels;
     //unique
     private String code;
-
-    private List<TriageDecisionRule> triageDecisionRules;
 }

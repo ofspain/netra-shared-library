@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-public class Transaction extends BaseEntity implements Auditable {
+public class Transaction extends BaseEntity{
 
     private String transactionRef;
     private LocalDateTime transactionDate;

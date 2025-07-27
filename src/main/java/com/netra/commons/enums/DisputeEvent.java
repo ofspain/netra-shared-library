@@ -1,0 +1,17 @@
+package com.netra.commons.enums;
+
+public enum DisputeEvent {
+    VALID_EVIDENCE,
+    INVALID_EVIDENCE,
+    START_DISPUTE,
+    REQUEST_ISSUER,
+    ISSUER_REJECT,
+    ISSUER_CONFIRM,
+    NOTIFY_ACQUIRER,
+    ACQUIRER_ACCEPT,
+    ACQUIRER_DECLINE,
+    ACQUIRER_REJECT,
+    ESCALATE,
+    RESOLVE,
+    CLOSE
+}

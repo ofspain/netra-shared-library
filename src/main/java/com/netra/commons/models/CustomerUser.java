@@ -16,6 +16,7 @@ public class CustomerUser extends BaseEntity implements Disputant, DisableAble {
     private List<AccountDetail> accounts;
     private String userPhone;//unique
     private String userEmail;
+    private Identity identity;
 
     @Override
     public DisputantType getDisputantType() {

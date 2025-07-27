@@ -28,6 +28,12 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
         // Utility: disable default messages
         context.disableDefaultConstraintViolation();
 
+        if(null == request.getApplicationChannel()){
+            context.buildConstraintViolationWithTemplate("Channel of submit is required.")
+                    .addPropertyNode("applicationChannel")
+                    .addConstraintViolation();
+        }
+
         // Rule 2: If PARTIAL, then disputedAmount must be valid
         DisputeAmountType disputeAmountType = request.getDisputeAmountType();
         if (disputeAmountType == DisputeAmountType.PARTIAL) {

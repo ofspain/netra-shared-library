@@ -13,6 +13,8 @@ public class InstitutionUser extends BaseEntity implements Disputant, DisableAbl
     private FinancialInstitution institution;
     private String email;
 
+    private Identity identity;
+
     @Override
     public DisputantType getDisputantType() {
         return DisputantType.INSTITUTIONUSER;
