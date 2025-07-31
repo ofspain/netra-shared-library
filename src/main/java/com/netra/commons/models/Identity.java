@@ -14,6 +14,7 @@ public class Identity extends BaseEntity implements DisableAble {
     private Boolean disabled;
     private String domainCode;//todo: assign a constant domain code to all customeruser
     private LocalDateTime passwordLastChanged;
+    private LocalDateTime lastLogin;
     private Boolean locked = Boolean.FALSE;
 
     private Set<Role> roles;
