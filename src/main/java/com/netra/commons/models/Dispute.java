@@ -22,7 +22,12 @@ public class Dispute extends BaseEntity{
         private String issuerCode;
         private String acquirerCode;
 
-        private String merchantRole;
+        private String merchantCode;
+
+
+        private String switcherCode;
+
+        private boolean locked;
 
 
         private boolean isFinalized; //reaches any end state
@@ -102,12 +107,21 @@ public class Dispute extends BaseEntity{
                 this.acquirerCode = acquirerCode;
         }
 
-        public String getMerchantRole() {
-                return merchantRole;
+        public String getMerchantCode() {
+                return merchantCode;
         }
 
-        public void setMerchantRole(String merchantRole) {
-                this.merchantRole = merchantRole;
+        public void setMerchantCode(String merchantCode) {
+                this.merchantCode = merchantCode;
+        }
+
+
+        public String getSwitcherCode() {
+                return switcherCode;
+        }
+
+        public void setSwitcherCode(String switcherCode) {
+                this.switcherCode = switcherCode;
         }
 
         public boolean isFinalized() {
@@ -132,6 +146,14 @@ public class Dispute extends BaseEntity{
 
         public void setResolvedInCustomerFavor(boolean resolvedInCustomerFavor) {
                 this.resolvedInCustomerFavor = resolvedInCustomerFavor;
+        }
+
+        public boolean isLocked() {
+                return locked;
+        }
+
+        public void setLocked(boolean locked) {
+                this.locked = locked;
         }
 
 

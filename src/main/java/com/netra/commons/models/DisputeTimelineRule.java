@@ -7,6 +7,7 @@ import com.netra.commons.enums.TransactionInstrument;
 import lombok.Data;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class DisputeTimelineRule extends BaseEntity implements DisableAble {
 
 
 
-    private Map<DisputeState, Integer> allowedNextStatesWithMaxDurationAfterDisputeLifecycleCanBegin;
+    private List<DisputeStateTransitionRule> allowedNextStatesWithMaxDurationAfterDisputeLifecycleCanBegin;
     // Dictates: From status A, within X hours, must transition to B (can enforce via policy engine)
 
     private Integer minDurationAfterTransactionBeforeDisputeCanBeCreated;
@@ -43,8 +44,8 @@ public class DisputeTimelineRule extends BaseEntity implements DisableAble {
     // Optional: maps to a known CBN or NIBSS policy section
 
 
-    private static Duration convertDisputeTimelineNumericDurationToJavaDuration(Integer durationInHours){
-        return Duration.ofDays(durationInHours);
+    private static Duration convertDisputeTimelineNumericDurationToJavaDuration(Integer durationInMinutes){
+        return Duration.ofMinutes(durationInMinutes);
     }
 
     private static Map<DisputeState, Duration> convertMapTimelineRuleDisputeStateDuration(Map<DisputeState, Integer> allowedNextStatesWithMaxDurationAfterDisputeLifecycleCanBegin){
