@@ -17,4 +17,9 @@ public class InstitutionUser extends BaseEntity implements Disputant, DisableAbl
     private Identity identity;
 
     public DomainType domainType = DomainType.FINANCIAL_INSTITUTION;
+
+    @Override
+    public DisputantType getDisputantType() {
+        return DisputantType.INSTITUTIONUSER;
+    }
 }

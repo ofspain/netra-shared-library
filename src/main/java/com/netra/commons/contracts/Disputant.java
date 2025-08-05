@@ -5,4 +5,6 @@ import com.netra.commons.models.Identity;
 
 public interface Disputant extends Nameable{
     Identity getIdentity();
+
+    DisputantType getDisputantType();
 }

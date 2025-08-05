@@ -21,4 +21,9 @@ public class CustomerUser extends BaseEntity implements Disputant, DisableAble {
 
     public DomainType domainType = DomainType.CUSTOMER;
     public String domainCode = Identity.CUSTOMERUSER_DOMAINCODE;
+
+    @Override
+    public DisputantType getDisputantType() {
+        return DisputantType.CUSTOMERUSER;
+    }
 }
