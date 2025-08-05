@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class Evidence extends BaseEntity {
     private EvidenceType evidenceType;
-    private String disputeCode;
+    private Long disputeId;
 
     private String uuid;           // Unique identifier (used in S3 key)
     private String s3Key;          // Full path/key in S3 (e.g. evidence/uuid.jpg)

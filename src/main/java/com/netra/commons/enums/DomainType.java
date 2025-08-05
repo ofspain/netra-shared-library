@@ -5,5 +5,11 @@ public enum DomainType {
     SWITCH,
     MERCHANT,
     SUPERAGENT,
-    REGULATOR;
+    REGULATOR,
+
+    INTERNAL,
+
+    SYSTEM,
+
+    CUSTOMER;
 }

@@ -3,6 +3,7 @@ package com.netra.commons.models;
 import com.netra.commons.contracts.DisableAble;
 import com.netra.commons.contracts.Disputant;
 import com.netra.commons.enums.DisputantType;
+import com.netra.commons.enums.DomainType;
 import lombok.Data;
 
 @Data
@@ -15,8 +16,5 @@ public class InstitutionUser extends BaseEntity implements Disputant, DisableAbl
 
     private Identity identity;
 
-    @Override
-    public DisputantType getDisputantType() {
-        return DisputantType.INSTITUTIONUSER;
-    }
+    public DomainType domainType = DomainType.FINANCIAL_INSTITUTION;
 }

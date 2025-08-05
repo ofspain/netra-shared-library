@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 public class Transaction extends BaseEntity{
@@ -22,4 +23,5 @@ public class Transaction extends BaseEntity{
     private String retrievalReferenceNumber;
     private String stan;
     private String transactionCurrencyCode;
+    private Map<String, Object> additionalInformation;
 }

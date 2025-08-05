@@ -10,7 +10,7 @@ public class Dispute extends BaseEntity{
 
         private Transaction transaction;
         private LocalDateTime disputeMarkedLegitTime;
-        private DisputeState currentStatus;
+        private DisputeState currentState;
 
         private DisputeState previousState;
 
@@ -24,6 +24,7 @@ public class Dispute extends BaseEntity{
 
         private String merchantCode;
 
+        private String beneficiaryCode;
 
         private String switcherCode;
 
@@ -51,12 +52,12 @@ public class Dispute extends BaseEntity{
                 this.disputeMarkedLegitTime = disputeMarkedLegitTime;
         }
 
-        public DisputeState getCurrentStatus() {
-                return currentStatus;
+        public DisputeState getCurrentState() {
+                return currentState;
         }
 
-        public void setCurrentStatus(DisputeState currentStatus) {
-                this.currentStatus = currentStatus;
+        public void setCurrentState(DisputeState currentState) {
+                this.currentState = currentState;
         }
 
         public DisputeState getPreviousState() {
@@ -122,6 +123,14 @@ public class Dispute extends BaseEntity{
 
         public void setSwitcherCode(String switcherCode) {
                 this.switcherCode = switcherCode;
+        }
+
+        public String getBeneficiaryCode() {
+                return beneficiaryCode;
+        }
+
+        public void setBeneficiaryCode(String beneficiaryCode) {
+                this.beneficiaryCode = beneficiaryCode;
         }
 
         public boolean isFinalized() {

@@ -7,11 +7,12 @@ import com.netra.commons.enums.CurrencyType;
 public class Currency extends BaseEntity implements Nameable, DisableAble{
 
     private String code;                // e.g.,ISO CODE "NGN", "USD", "BTC"
+    private String numericCode;         // e.g.,ISO Numeric CODE "566", "USD", "BTC"
     private String name;                // e.g., "Naira", "US Dollar", "Bitcoin"
     private String symbol;              // e.g., "₦", "$", "₿"
     private CurrencyType type;          // FIAT, CRYPTO, CBDC, TOKEN
     private int decimalPrecision;       // e.g., 2 for NGN, 8 for BTC
-    private boolean disabled;           // Used for enabling/disabling currencies
+    private Boolean disabled;           // Used for enabling/disabling currencies
     // --- Constructors ---
     public Currency() {}
 
@@ -72,6 +73,15 @@ public class Currency extends BaseEntity implements Nameable, DisableAble{
 
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
+    }
+
+
+    public String getNumericCode() {
+        return numericCode;
+    }
+
+    public void setNumericCode(String numericCode) {
+        this.numericCode = numericCode;
     }
 
 }

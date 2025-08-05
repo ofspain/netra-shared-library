@@ -8,9 +8,9 @@ public class FinancialInstitution   extends BaseEntity implements Domain{
     private String name;
     private String code;
     private String domainCode;
-
     private Boolean disabled;
 
+    private EndpointConfig endpointConfig;
 
     @Override
     public String getName() {
@@ -60,5 +60,15 @@ public class FinancialInstitution   extends BaseEntity implements Domain{
 
     public void enable(){
        this.disabled = false;
+    }
+
+
+
+    public EndpointConfig getEndpointConfig() {
+        return endpointConfig;
+    }
+
+    public void setEndpointConfig(EndpointConfig endpointConfig) {
+        this.endpointConfig = endpointConfig;
     }
 }
