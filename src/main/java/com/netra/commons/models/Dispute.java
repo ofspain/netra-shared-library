@@ -5,9 +5,13 @@ import com.netra.commons.enums.ApplicationChannel;
 import com.netra.commons.enums.DisputeState;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Dispute extends BaseEntity{
 
+
+
+        private String logCode; //generate on db
         private Transaction transaction;
         private LocalDateTime disputeMarkedLegitTime;
         private DisputeState currentState;
@@ -29,6 +33,8 @@ public class Dispute extends BaseEntity{
         private String switcherCode;
 
         private boolean locked;
+
+        private List<Evidence> evidences;
 
 
         private boolean isFinalized; //reaches any end state
@@ -165,5 +171,11 @@ public class Dispute extends BaseEntity{
                 this.locked = locked;
         }
 
+        public String getLogCode() {
+                return logCode;
+        }
 
+        public void setLogCode(String logCode) {
+                this.logCode = logCode;
+        }
 }

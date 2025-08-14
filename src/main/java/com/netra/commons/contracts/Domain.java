@@ -4,9 +4,9 @@ import com.netra.commons.enums.DomainType;
 
 public interface Domain extends Nameable, DisableAble{
 
-    String getCode();
+    String getCode(); //official code
     DomainType getDomainType();
-    String getDomainCode();
+    String getDomainCode(); //platform code
 
     void setCode(String code);
     void setDomainCode(String domainCode);

@@ -127,7 +127,7 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
                 valid = false;
             }
 
-            TransactionRailDTO rail = txn.getTransactionRailDTO();
+            TransactionRailDTO rail = txn.getTransactionRail();
             if (rail == null || rail.getInstrumentId() == null || rail.getInstrumentId().isEmpty()) {
                 context.buildConstraintViolationWithTemplate("Transaction instrument ID is required.")
                         .addPropertyNode("transaction.transactionRailDTO.instrumentId")

@@ -24,8 +24,8 @@ public class DisputeRequestUtil {
                 tx.getTransactionRef(),
                 tx.getTransactionDate().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
                 String.valueOf(tx.getAmount()),
-                tx.getTransactionRailDTO().getInstrument().name(),
-                tx.getTransactionRailDTO().getChannel().name(),
+                tx.getTransactionRail().getInstrument().name(),
+                tx.getTransactionRail().getChannel().name(),
                 tx.getTransactionType().getName(),
                 issuer
         );

@@ -14,4 +14,8 @@ public class Evidence extends BaseEntity {
     private String extension;      // jpg, png, pdf, etc.
     private String contentType;    // image/jpeg, application/pdf
     private Long size;             // Optional: in bytes
+
+    private String duplicateHash;  //used for duplication detection
+
+    public static final Integer PREFIX_SEARCH_LENGTH_FOR_HASH_DUPLICATE = 16;
 }

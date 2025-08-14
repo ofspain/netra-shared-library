@@ -16,12 +16,10 @@ public class Identity extends BaseEntity implements DisableAble {
     private Boolean disabled;
 
     //both these two will be used to identify the user on the other side of the console
-
-    //this implies we will persist user in the other db before persisting to
-    //the authrex db(agreed, loopsided) this is a good fit to implement saga between the two services(db)
+    private String identityUuid;
     private String domainCode;
     private DomainType domainType;
-    private Long userId;
+
 
     private LocalDateTime passwordLastChanged;
     private LocalDateTime lastLogin;
