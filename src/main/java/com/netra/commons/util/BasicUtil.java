@@ -1,6 +1,7 @@
 package com.netra.commons.util;
 
 import lombok.experimental.UtilityClass;
+import org.hashids.Hashids;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,6 +15,11 @@ import java.util.Random;
 public class BasicUtil {
 
     private static final String ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+
+    private static final String SALT = "4fa85f64-5717-4562-b3fc-2c963f66afa6";
+    private static final int MIN_HASH_LENGTH = 8;
+    private static final Hashids HASHIDS = new Hashids(SALT, MIN_HASH_LENGTH);
 
     public Boolean validString(String string){
        return  string != null && !string.isBlank();
@@ -87,5 +93,17 @@ public class BasicUtil {
         components.put("checksum", parts[3]);
 
         return components;
+    }
+
+    public static String encodeUrlBoundId(long id) {
+        return HASHIDS.encode(id);
+    }
+
+    public static long decodeIdStringFromUrl(String hash) {
+        long[] numbers = HASHIDS.decode(hash);
+        if (numbers.length == 0) {
+            throw new IllegalArgumentException("Invalid hash: " + hash);
+        }
+        return numbers[0];
     }
 }

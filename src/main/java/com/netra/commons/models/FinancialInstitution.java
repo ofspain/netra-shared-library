@@ -2,13 +2,17 @@ package com.netra.commons.models;
 
 import com.netra.commons.contracts.Domain;
 import com.netra.commons.enums.DomainType;
+import lombok.ToString;
 
 
+@ToString(callSuper = true)
 public class FinancialInstitution   extends BaseEntity implements Domain{
     private String name;
     private String code;
     private String domainCode;
     private Boolean disabled;
+
+    private String logoKey;
 
     private EndpointConfig endpointConfig;
 
@@ -70,5 +74,14 @@ public class FinancialInstitution   extends BaseEntity implements Domain{
 
     public void setEndpointConfig(EndpointConfig endpointConfig) {
         this.endpointConfig = endpointConfig;
+    }
+
+
+    public String getLogoKey() {
+        return logoKey;
+    }
+
+    public void setLogoKey(String logoKey) {
+        this.logoKey = logoKey;
     }
 }

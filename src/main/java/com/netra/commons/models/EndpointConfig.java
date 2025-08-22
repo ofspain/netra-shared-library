@@ -2,11 +2,13 @@ package com.netra.commons.models;
 
 import com.netra.commons.enums.DomainType;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Map;
 
 @Data
+@ToString
 public class EndpointConfig extends BaseEntity {
 
     // Basic identity
@@ -64,6 +66,7 @@ public class EndpointConfig extends BaseEntity {
     }
 
     @Data
+    @ToString
     public static class ProxyConfig {
         private String host;
         private Integer port;
@@ -82,6 +85,7 @@ public class EndpointConfig extends BaseEntity {
     }
 
     @Data
+    @ToString
     public static class EndpointDetail {
         private String url;
         private HTTPMethod method;
@@ -91,10 +95,13 @@ public class EndpointConfig extends BaseEntity {
     }
 
     @Data
+    @ToString
     public static class EndpointHeader {
         private String name;
         private String value;
         private boolean dynamic;
+
+        public EndpointHeader(){}
 
         public EndpointHeader(String name, String value, boolean dynamic){
             this.name = name;
