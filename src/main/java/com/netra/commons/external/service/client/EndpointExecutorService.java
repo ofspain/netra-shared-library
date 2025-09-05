@@ -6,7 +6,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,7 +22,6 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public class EndpointExecutorService {
 
-    private final RedisTemplate<String, String> redisTemplate;
     private final MeterRegistry meterRegistry;
     private final TokenProvider tokenProvider; // Token retrieval logic
     private final AuditLogger auditLogger;

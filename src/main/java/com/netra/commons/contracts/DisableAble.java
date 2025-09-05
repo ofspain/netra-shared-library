@@ -1,5 +1,7 @@
 package com.netra.commons.contracts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public interface DisableAble {
 
     Boolean getDisabled();
@@ -13,6 +15,7 @@ public interface DisableAble {
         setDisabled(false);
     }
 
+    @JsonIgnore
     default Boolean isEnabled(){
 
         return !getDisabled();
