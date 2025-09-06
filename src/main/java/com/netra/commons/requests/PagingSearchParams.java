@@ -3,41 +3,52 @@ package com.netra.commons.requests;
 import lombok.ToString;
 
 @ToString
-public class PagingSearchParams{
+public class PagingSearchParams<T extends PagingSearchParams<T>> {
 
     private static final int PAGE_SIZE_MAX = 100;
+    private static final int DEFAULT_PAGE_NUM = 1;
 
     private Integer pageNum;
     private Integer pageSize;
 
     public PagingSearchParams() {
-        setPageNum(1);
-        setPageSize(PAGE_SIZE_MAX);
+        this.pageNum = DEFAULT_PAGE_NUM;
+        this.pageSize = PAGE_SIZE_MAX;
+    }
+
+    // --- Fluent API ---
+    @SuppressWarnings("unchecked")
+    public T withPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T withPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+        return (T) this;
     }
 
     public Integer getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(Integer pageNum) {
-        if (pageNum == null || pageNum < 1) {
-            this.pageNum = 1;
-        } else {
-            this.pageNum = pageNum;
-        }
+        return safePageNum();
     }
 
     public Integer getPageSize() {
-        return pageSize;
+        return safePageSize();
     }
 
-    public void setPageSize(Integer pageSize) {
-        if (pageSize == null || pageSize < 1 || pageSize > PAGE_SIZE_MAX) {
-            this.pageSize = PAGE_SIZE_MAX;
-        } else {
-            this.pageSize = pageSize;
-        }
+    public int calculateDBOffset() {
+        return (safePageNum() - 1) * safePageSize();
     }
 
+    // --- Private sanitizers ---
+    private int safePageNum() {
+        return (pageNum == null || pageNum < 1) ? DEFAULT_PAGE_NUM : pageNum;
+    }
+
+    private int safePageSize() {
+        return (pageSize == null || pageSize < 1 || pageSize > PAGE_SIZE_MAX)
+                ? PAGE_SIZE_MAX
+                : pageSize;
+    }
 }
-

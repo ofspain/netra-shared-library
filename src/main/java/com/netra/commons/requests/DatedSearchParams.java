@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @ToString
 @Data
-public class DatedSearchParams extends PagingSearchParams{
+public class DatedSearchParams extends PagingSearchParams<DatedSearchParams> {
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
