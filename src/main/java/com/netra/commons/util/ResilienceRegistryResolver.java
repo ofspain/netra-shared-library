@@ -67,6 +67,7 @@ public class ResilienceRegistryResolver {
                 };
 
             case REDIRECT_ENDPOINT:
+                ////todo: will redirect to the specified url
                 throw new UnsupportedOperationException("REDIRECT_ENDPOINT fallback is not yet supported.");
 
             case EXCEPTION:
@@ -74,10 +75,7 @@ public class ResilienceRegistryResolver {
                     try {
                         return retryable.get();
                     } catch (Exception e) {
-                        String message = Optional.ofNullable(fallback.getValue())
-                                .map(m -> m.get("message").toString())
-                                .orElse("Fallback exception triggered.");
-                        throw new IllegalStateException(message, e);
+                        throw new IllegalStateException("Fallback exception triggered.", e);
                     }
                 };
 

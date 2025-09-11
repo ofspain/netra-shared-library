@@ -62,7 +62,7 @@ public class EndpointConfig extends BaseEntity {
     @Data
     public static class FallbackConfig {
         private FallbackType type;
-        private Map<String, Object> value;
+        private String value;
     }
 
     @Data
