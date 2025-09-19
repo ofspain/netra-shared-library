@@ -1,7 +1,6 @@
 package com.netra.commons.models;
 
-import com.netra.commons.contracts.Domain;
-import com.netra.commons.models.service.outlet.AccessPoint;
+import com.netra.commons.models.outlet.AccessPoint;
 import com.netra.commons.requests.TransactionErrorDTO;
 import com.netra.commons.requests.util.TransactionRailDTO;
 import lombok.Data;

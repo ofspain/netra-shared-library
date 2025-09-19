@@ -2,6 +2,7 @@ package com.netra.commons.models;
 
 import com.netra.commons.contracts.DisableAble;
 import com.netra.commons.contracts.Nameable;
+import com.netra.commons.models.endpoint.EndpointConfig;
 import lombok.Data;
 
 @Data

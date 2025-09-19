@@ -16,8 +16,9 @@ class CommonsNetraApplicationTests {
 
 	@Test
 	void testHashingId(){
-		Long id = 6l;
+		Long id = 2l;
 		String hashed = BasicUtil.encodeUrlBoundId(id);
+		System.out.println(">>> "+hashed);
 	}
 
 }

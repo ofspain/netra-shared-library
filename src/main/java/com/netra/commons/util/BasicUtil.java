@@ -3,6 +3,7 @@ package com.netra.commons.util;
 import lombok.experimental.UtilityClass;
 import org.hashids.Hashids;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
@@ -44,7 +45,7 @@ public class BasicUtil {
     public String generateChecksum(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            byte[] hashBytes = digest.digest(input.getBytes());
+            byte[] hashBytes = digest.digest(input.getBytes(StandardCharsets.UTF_8));
             StringBuilder hexString = new StringBuilder();
             for (byte b : hashBytes) {
                 String hex = Integer.toHexString(0xff & b).toUpperCase();

@@ -1,7 +1,7 @@
 package com.netra.commons.models;
 
 import com.netra.commons.enums.AccountType;
-import com.netra.commons.models.service.outlet.Merchant;
+import com.netra.commons.models.outlet.Merchant;
 import jakarta.validation.constraints.*;
 
 /**

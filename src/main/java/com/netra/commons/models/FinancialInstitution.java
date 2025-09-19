@@ -2,6 +2,7 @@ package com.netra.commons.models;
 
 import com.netra.commons.contracts.Domain;
 import com.netra.commons.enums.DomainType;
+import com.netra.commons.models.endpoint.EndpointConfig;
 import lombok.ToString;
 
 
