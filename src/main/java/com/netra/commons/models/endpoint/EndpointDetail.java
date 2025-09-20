@@ -26,4 +26,12 @@ public class EndpointDetail {
 
     // contract for runtime inputs beyond headers (form fields, body keys etc)
     private RuntimeContract runtimeContract;
+
+    public enum HTTPMethod {
+        //todo: note only non-mutable calls will be made
+        GET,
+        POST,
+        PUT,
+        DELETE
+    }
 }
