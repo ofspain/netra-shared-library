@@ -1,6 +1,7 @@
 package com.netra.commons.models.endpoint;
 
 
+import com.netra.commons.util.BasicUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,28 @@ public class ApiKeyAuth implements AuthConfig {
 
     private String suffix;             // e.g. "@uat"
     private String suffixSeparator = "";  // default glue (no space)
+
+
+    public String buildValue(String secret) {
+        StringBuilder sb = new StringBuilder();
+
+        if (BasicUtil.validString(prefix)) {
+            sb.append(prefix);
+            if (BasicUtil.validString(prefixSeparator)) {
+                sb.append(prefixSeparator);
+            }
+        }
+
+        sb.append(secret);
+
+        if (BasicUtil.validString(suffixSeparator)) {
+            sb.append(suffixSeparator);
+        }
+        if (BasicUtil.validString(suffix)) {
+            sb.append(suffix);
+        }
+
+        return sb.toString();
+    }
+
 }

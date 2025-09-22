@@ -74,42 +74,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Resilience4j -->
-        <dependency>
-            <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-spring-boot3</artifactId>
-            <version>${github-resilience4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-retry</artifactId>
-            <version>${github-resilience4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-circuitbreaker</artifactId>
-            <version>${github-resilience4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-timelimiter</artifactId>
-            <version>${github-resilience4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-micrometer</artifactId>
-            <version>${github-resilience4j.version}</version>
-        </dependency>
-
-        <!-- HTTP Client -->
-
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
-        <dependency>
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-            <version>5.4.4</version>
-        </dependency>
-
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>

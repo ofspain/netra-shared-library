@@ -5,6 +5,9 @@ import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +84,26 @@ public class UriBuilderUtil {
         }
 
         return resolved;
+    }
+
+    public static String buildQueryString(Map<String, String> queryParams) {
+        if (queryParams == null || queryParams.isEmpty()) {
+            return "";
+        }
+
+        return queryParams.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey()) // deterministic ordering
+                .map(entry -> encode(entry.getKey()) + "=" + encode(entry.getValue()))
+                .reduce((a, b) -> a + "&" + b)
+                .orElse("");
+    }
+
+    private static String encode(String value) {
+        try {
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Failed to encode query param: " + value, e);
+        }
     }
 
 
