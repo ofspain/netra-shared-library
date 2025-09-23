@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -12,14 +13,14 @@ import java.util.List;
 public class EndpointDetail {
     private String url; // path relative to baseUrl or absolute
     private HTTPMethod method;
-    private List<String> pathParamKeys;
-    private List<String> queryParamKeys;
+    private List<String> pathParamKeys = new ArrayList<>();
+    private List<String> queryParamKeys = new ArrayList<>();
 
     // persisted template headers (may contain ${vault:<id>} placeholders)
-    private List<StaticHeader> headers;
+    private List<StaticHeader> headers = new ArrayList<>();
 
     // runtime inputs the caller must supply
-    private List<DynamicHeader> dynamicHeaders;
+    private List<DynamicHeader> dynamicHeaders = new ArrayList<>();
 
     // request body template (may contain vault placeholders or path param placeholders)
     private String requestBodyTemplate;

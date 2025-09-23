@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FallbackConfig {
     private FallbackType type = FallbackType.EXCEPTION;
-    private String value;
+    private String value = "An exception occurs";
 
     public enum FallbackType { STATIC_RESPONSE, REDIRECT_ENDPOINT, EXCEPTION }
 }

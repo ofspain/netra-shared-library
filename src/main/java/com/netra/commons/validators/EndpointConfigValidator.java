@@ -81,8 +81,9 @@ public class EndpointConfigValidator implements ConstraintValidator<ValidEndpoin
             }
 
             EncryptionConfig enc = security.getEncryption();
-            if (enc != null && enc.getType() != EncryptionConfig.EncryptionType.NONE) {
-                if (enc.getEncryptionKey() == null || enc.getEncryptionKey().isBlank()) {
+
+            if(security.isEncryptPayload()){
+                if(null == enc || enc.getType() != EncryptionConfig.EncryptionType.NONE){
                     context.buildConstraintViolationWithTemplate("Encryption key must be provided when encryption is enabled.")
                             .addPropertyNode("security.encryption.encryptionKey").addConstraintViolation();
                     valid = false;
@@ -435,52 +436,67 @@ public class EndpointConfigValidator implements ConstraintValidator<ValidEndpoin
         if (type != EncryptionConfig.EncryptionType.NONE) {
             // ==== Algorithm ====
             if (config.getAlgorithm() == null || config.getAlgorithm().isBlank()) {
-                context.buildConstraintViolationWithTemplate("Algorithm must be provided when encryption is enabled.")
+                context.buildConstraintViolationWithTemplate(
+                                "Algorithm must be provided when encryption is enabled.")
                         .addPropertyNode("algorithm").addConstraintViolation();
                 valid = false;
+            } else {
+                // Optional: validate algorithm consistency
+                switch (type) {
+                    case AES -> {
+                        if (!config.getAlgorithm().toUpperCase().contains("AES")) {
+                            context.buildConstraintViolationWithTemplate(
+                                            "AES encryption requires an AES algorithm (e.g. AES/GCM/NoPadding).")
+                                    .addPropertyNode("algorithm").addConstraintViolation();
+                            valid = false;
+                        }
+                    }
+                    case JWE -> {
+                        if (!config.getAlgorithm().toUpperCase().contains("RSA")
+                                && !config.getAlgorithm().toUpperCase().contains("ECDH")) {
+                            context.buildConstraintViolationWithTemplate(
+                                            "JWE encryption must specify a valid key management algorithm (RSA-OAEP, ECDH-ES, etc).")
+                                    .addPropertyNode("algorithm").addConstraintViolation();
+                            valid = false;
+                        }
+                    }
+                    default -> {
+                        // custom validators could be added later
+                    }
+                }
             }
 
             // ==== Encryption Key ====
             if (config.getEncryptionKey() == null || !config.getEncryptionKey().startsWith("vault:")) {
-                context.buildConstraintViolationWithTemplate("Encryption key must be a valid vault alias (vault:...).")
+                context.buildConstraintViolationWithTemplate(
+                                "Encryption key must be a valid vault alias (vault:...).")
                         .addPropertyNode("encryptionKey").addConstraintViolation();
                 valid = false;
             }
 
-            // ==== IV Param (AES/JWE usually require) ====
-            if (type == EncryptionConfig.EncryptionType.AES || type == EncryptionConfig.EncryptionType.JWE) {
-                if (config.getIvParam() == null || config.getIvParam().isBlank()) {
-                    context.buildConstraintViolationWithTemplate("IV parameter must be provided for AES/JWE encryption.")
-                            .addPropertyNode("ivParam").addConstraintViolation();
-                    valid = false;
-                }
+            // ==== IV Param (only if protocol requires explicit IV passing) ====
+            if ((type == EncryptionConfig.EncryptionType.AES || type == EncryptionConfig.EncryptionType.JWE)
+                    && (config.getIvParam() == null || config.getIvParam().isBlank())) {
+                context.buildConstraintViolationWithTemplate(
+                                "IV parameter name must be provided for AES/JWE when IV is carried in request/response.")
+                        .addPropertyNode("ivParam").addConstraintViolation();
+                valid = false;
             }
         }
 
-        // ==== AAD Headers ====
+// ==== AAD Headers ====
         List<EncryptionConfig.AadHeader> aadHeaders = config.getAadHeaders();
         if (aadHeaders != null) {
             for (int i = 0; i < aadHeaders.size(); i++) {
                 EncryptionConfig.AadHeader header = aadHeaders.get(i);
-                //AadHeaderValidator headerValidator = new AadHeaderValidator();
                 if (!isValid(header, context)) {
-                    context.buildConstraintViolationWithTemplate("Invalid AAD header at index " + i)
+                    context.buildConstraintViolationWithTemplate(
+                                    "Invalid AAD header at index " + i)
                             .addPropertyNode("aadHeaders[" + i + "]").addConstraintViolation();
                     valid = false;
                 }
             }
         }
-
-        // ==== Signature Key ====
-        if (config.isSignPayload()) {
-            if (config.getSignatureKey() == null || !config.getSignatureKey().startsWith("vault:")) {
-                context.buildConstraintViolationWithTemplate(
-                                "Signature key must be provided as a vault alias when signPayload is enabled.")
-                        .addPropertyNode("signatureKey").addConstraintViolation();
-                valid = false;
-            }
-        }
-
         return valid;
     }
 

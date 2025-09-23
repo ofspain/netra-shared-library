@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -12,11 +13,11 @@ import java.util.Map;
 @NoArgsConstructor
 public class EndpointConfig {
     private Long id; // uuid or natural key
-    private NetworkConfig network;
-    private SecurityConfig security;
-    private Map<OperationType, EndpointDetail> endpoints; // key = operation name (e.g. "uniqueTransaction")
-    private ResilienceConfig resilience;
-    private Map<String, Object> metadata; // extensibility bag (tags, owner, version)
+    private NetworkConfig network = new NetworkConfig();
+    private SecurityConfig security = new SecurityConfig();
+    private Map<OperationType, EndpointDetail> endpoints = new HashMap<>(); // key = operation name (e.g. "uniqueTransaction")
+    private ResilienceConfig resilience = new ResilienceConfig();
+    private Map<String, Object> metadata = new HashMap<>(); // extensibility bag (tags, owner, version)
 
     //owner's identity
     private Long domainOwnerId;
