@@ -16,6 +16,8 @@ public class EndpointDetail {
     private List<String> pathParamKeys = new ArrayList<>();
     private List<String> queryParamKeys = new ArrayList<>();
 
+    private OperationType operationType;
+
     // persisted template headers (may contain ${vault:<id>} placeholders)
     private List<StaticHeader> headers = new ArrayList<>();
 
@@ -34,5 +36,19 @@ public class EndpointDetail {
         POST,
         PUT,
         DELETE
+    }
+
+    public enum OperationType{
+
+
+        UNIQUE_TRANSACTION_SEARCH("uniqueTransaction"), BULK_TRANSACTION_SEARCH("bulkTransaction");
+        private final String value;
+        OperationType(String value){
+            this.value = value;
+        }
+
+        public String getValue(){
+            return this.value;
+        }
     }
 }

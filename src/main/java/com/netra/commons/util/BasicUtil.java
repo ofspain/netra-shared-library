@@ -8,6 +8,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -106,5 +107,16 @@ public class BasicUtil {
             throw new IllegalArgumentException("Invalid hash: " + hash);
         }
         return numbers[0];
+    }
+
+    public static String encodeURLBoundString(String input) {
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(input.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static String decodeStringFromURL(String encoded) {
+        return new String(Base64.getUrlDecoder()
+                .decode(encoded), StandardCharsets.UTF_8);
     }
 }

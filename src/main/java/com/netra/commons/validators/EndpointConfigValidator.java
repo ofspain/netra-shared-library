@@ -110,26 +110,40 @@ public class EndpointConfigValidator implements ConstraintValidator<ValidEndpoin
         }
 
         // ==== Endpoints ====
-        Map<EndpointConfig.OperationType, EndpointDetail> endpoints = config.getEndpoints();
+        List<EndpointDetail> endpoints = config.getEndpoints();
         if (endpoints == null || endpoints.isEmpty()) {
             context.buildConstraintViolationWithTemplate("At least one endpoint must be defined.")
                     .addPropertyNode("endpoints").addConstraintViolation();
             valid = false;
         } else {
-            for (Map.Entry<EndpointConfig.OperationType, EndpointDetail> entry : endpoints.entrySet()) {
-                String key = entry.getKey().name();
-                if (!validateEndpointDetail(context, entry.getValue(), "endpoints[" + key + "]")) {
+            for (int i = 0; i < endpoints.size(); i++) {
+                EndpointDetail detail = endpoints.get(i);
+                String key = detail.getOperationType() != null ? detail.getOperationType().name() : "UNKNOWN";
+
+                // Point to the list element (using index or op type)
+                if (!validateEndpointDetail(context, detail, "endpoints[" + key + "]")) {
                     valid = false;
                 }
             }
         }
 
         return valid;
+
+
+
+
     }
 
     private boolean validateEndpointDetail(ConstraintValidatorContext context, EndpointDetail detail, String path) {
         if (detail == null) return true;
+
         boolean valid = true;
+
+        if(null == detail.getOperationType()){
+            context.buildConstraintViolationWithTemplate(path + ".operationType must not be blank.")
+                    .addPropertyNode(path + ".operationType").addConstraintViolation();
+            valid = false;
+        }
 
         if (detail.getUrl() == null || detail.getUrl().isBlank()) {
             context.buildConstraintViolationWithTemplate(path + ".url must not be blank.")
