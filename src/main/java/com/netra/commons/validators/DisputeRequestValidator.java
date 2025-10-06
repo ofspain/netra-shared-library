@@ -81,8 +81,12 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
                 break;
 
             case INSTITUTIONUSER:
-                if (!hasParticipantWithRole(request.getParticipants(), TransactionParticipationRole.ACQUIRER)) {
-                    context.buildConstraintViolationWithTemplate("ACQUIRER participant is required for INSTITUTIONUSER.")
+                boolean hasAcquirer = hasParticipantWithRole(request.getParticipants(), TransactionParticipationRole.ACQUIRER);
+                boolean hasIssuer = hasParticipantWithRole(request.getParticipants(), TransactionParticipationRole.ISSUER);
+                boolean hasProcessor = hasParticipantWithRole(request.getParticipants(), TransactionParticipationRole.SWITCHER);
+
+                if (!hasAcquirer || !hasIssuer) {
+                    context.buildConstraintViolationWithTemplate("SWITCH, ACQUIRER AND ISSUER  participants are required for INSTITUTIONUSER.")
                             .addPropertyNode("participants")
                             .addConstraintViolation();
                     valid = false;

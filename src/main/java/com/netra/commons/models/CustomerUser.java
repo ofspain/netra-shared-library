@@ -6,6 +6,7 @@ import com.netra.commons.enums.DisputantType;
 import com.netra.commons.enums.DomainType;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,7 +15,7 @@ public class CustomerUser extends BaseEntity implements Disputant, DisableAble {
     private String name;
     private Boolean disabled;
 
-    private List<AccountDetail> accounts;
+    private List<AccountDetail> accounts = new ArrayList<>();
     private String userPhone;//unique
     private String userEmail;
     private Identity identity;

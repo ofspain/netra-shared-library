@@ -29,6 +29,4 @@ public class CreateDisputeRequest {
 
     private ApplicationChannel applicationChannel;
 
-
-
 }
