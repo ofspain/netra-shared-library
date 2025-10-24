@@ -1,6 +1,9 @@
 package com.netra.commons.enums;
 
-public enum DisputeEvent {
+public enum DisputeTransitionEvent {
+
+    BOOTSTRAP_CONTEXT_USER,
+    BOOTSTRAP_CONTEXT_INSTITUTION,
     VALID_EVIDENCE,
     INVALID_EVIDENCE,
     START_DISPUTE,

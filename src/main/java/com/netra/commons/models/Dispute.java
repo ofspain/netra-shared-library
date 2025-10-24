@@ -2,9 +2,11 @@ package com.netra.commons.models;
 
 import com.netra.commons.contracts.Disputant;
 import com.netra.commons.enums.ApplicationChannel;
+import com.netra.commons.enums.DisputeMode;
 import com.netra.commons.enums.DisputeState;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Dispute extends BaseEntity{
@@ -13,7 +15,7 @@ public class Dispute extends BaseEntity{
 
         private String logCode; //generate on db
         private Transaction transaction;
-        private LocalDateTime disputeMarkedLegitTime;
+        private LocalDateTime disputeMarkedLegitTime; //will be applicable only for user raised dispute, marked when issuer verified
         private DisputeState currentState;
 
         private DisputeState previousState;
@@ -32,9 +34,15 @@ public class Dispute extends BaseEntity{
 
         private String switcherCode;
 
+        private String domainCode;//the domain that 'owns' this dispute(should be only registered fin_inst)
+
+        private DisputeMode disputeMode;
+
         private boolean locked;
 
-        private List<Evidence> evidences;
+        private List<Evidence> evidences = new ArrayList<>();
+
+        private List<DisputeJournal> disputeJournals = new ArrayList<>();
 
 
         private boolean isFinalized; //reaches any end state
@@ -177,5 +185,37 @@ public class Dispute extends BaseEntity{
 
         public void setLogCode(String logCode) {
                 this.logCode = logCode;
+        }
+
+        public void setDomainCode(String domainCode) {
+                this.domainCode = domainCode;
+        }
+
+        public String getDomainCode() {
+                return domainCode;
+        }
+
+        public DisputeMode getDisputeMode() {
+                return disputeMode;
+        }
+
+        public void setDisputeMode(DisputeMode disputeMode) {
+                this.disputeMode = disputeMode;
+        }
+
+        public List<Evidence> getEvidences() {
+                return evidences;
+        }
+
+        public void setEvidences(List<Evidence> evidences) {
+                this.evidences = evidences;
+        }
+
+        public void setDisputeJournals(List<DisputeJournal> disputeJournals) {
+                this.disputeJournals = disputeJournals;
+        }
+
+        public List<DisputeJournal> getDisputeJournals() {
+                return disputeJournals;
         }
 }

@@ -1,6 +1,7 @@
 package com.netra.commons.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netra.commons.contracts.DisableAble;
 import com.netra.commons.enums.DomainType;
 import lombok.Data;

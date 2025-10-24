@@ -2,11 +2,11 @@ package com.netra.commons.models.outlet;
 
 import lombok.Data;
 
+import java.util.List;
+
 
 @Data
-public class Agent extends AccessPoint {
-
-    private String location;                  // Address / LGA / State
+public class Agent  extends RetailAccessPoint{
 
     public AccessPointType getAccessPointType(){
         return AccessPointType.AGENT;

@@ -5,12 +5,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class Merchant extends AccessPoint{
+public class Merchant extends RetailAccessPoint{
 
     private List<SettlementAccount> settlementAccounts;
-
-    // Locations under this merchant
-    private List<MerchantLocation> locations;
 
     public AccessPointType getAccessPointType(){
         return AccessPointType.MERCHANT;
