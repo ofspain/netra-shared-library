@@ -4,33 +4,57 @@ import com.netra.commons.contracts.Disputant;
 import com.netra.commons.enums.ApplicationChannel;
 import com.netra.commons.enums.DisputeMode;
 import com.netra.commons.enums.DisputeAmountType;
+import com.netra.commons.enums.TransactionAction;
 import com.netra.commons.models.AccountDetail;
 import com.netra.commons.models.Evidence;
-import com.netra.commons.models.Transaction;
-import com.netra.commons.models.TransactionParticipant;
-import com.netra.commons.models.outlet.AccessPoint;
+import com.netra.commons.models.FacilitatorDisputant;
+import com.netra.commons.models.FinancialInstitution;
+import com.netra.commons.requests.util.TransactionRailDTO;
 import com.netra.commons.validators.annotations.ValidDisputeRequest;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @ValidDisputeRequest
 public class CreateDisputeRequest {
 
-    private Disputant initiator; // Who is initiating the dispute
-    private Transaction transaction; // The disputed transaction
-    private List<TransactionParticipant> participants; // All entities involved
-    private List<Evidence> evidences; // Supporting documents
-    private DisputeAmountType disputeAmountType; // FULL or PARTIAL
-    private DisputeMode mode; // CHARGEBACK, REFUND, GOOD_FAITH, etc.
-    private String note; // Free-text description of the issue
-    private BigDecimal disputedAmount;
-    private AccessPoint accessPoint;
+    private Disputant initiator;//host id, disputant_type
 
-    private AccountDetail accountDetail; //for customeruser
+    private DisputingAs disputingAs;
+
+    private List<Evidence> evidences;
+    private DisputeAmountType disputeAmountType;
+    private DisputeMode mode;
+    private String note;
+    private BigDecimal disputedAmount;
+
+    private AccountDetail affectedAccount;
+    private AccountDetail beneficiaryAccount;//only for web/mobile based
 
     private ApplicationChannel applicationChannel;
+
+    private TransactionRailDTO transactionRail;
+
+    private TransactionAction transactionAction;
+    private FacilitatorDisputant facilitatorDisputant;
+    private FinancialInstitution acquirer;//for customer user, evidence should be used, for issuer, then it must be supplied
+    private FinancialInstitution issuer;//for customer user, this is derived from affected account, for acquirer, then it must be supplied(may be for goodfaith)
+    private FinancialInstitution aggregator;//for customer user, evidence should be used, for issuer, then it must be supplied
+    private TransactionErrorDTO error;
+
+    private String issuerTransactionRef;
+    private String stan;
+    private String rrn;
+    private String authCode;
+    private BigDecimal transactionAmount;
+    private LocalDateTime transactionDate;
+
+
+    public enum DisputingAs{
+        ISSUER, ACQUIRER
+    }
 
 }

@@ -12,7 +12,8 @@ import java.util.Map;
 @Data
 public class Transaction extends BaseEntity{
 
-    private String transactionRef; //todo: craftly append/prepend domaincode of issuer/acquirer to original ref received
+    private String issuerTransactionRef;
+    private String systemTransactionRef;//themistra generated
     private FinancialInstitution issuer;
     private FinancialInstitution acquirer;
     private Beneficiary beneficiary;
@@ -32,6 +33,4 @@ public class Transaction extends BaseEntity{
 
     private TransactionDisputabilityCheck disputabilityCheck;
 
-    //for transaction done via service point
-    private AccessPoint accessPoint;
 }

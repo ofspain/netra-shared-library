@@ -10,5 +10,7 @@ public abstract class RetailAccessPoint extends AccessPoint {
     private List<AccessPointLocation> locations;
 
     private Identity identity;
+
+    private String code;
 }
 

@@ -10,6 +10,15 @@ import lombok.Data;
 
 import java.util.List;
 
+
+//todo: only use this to model facilitator disputant and then delete it
+//todo: only use this to model facilitator disputant and then delete it
+//todo: only use this to model facilitator disputant and then delete it
+//todo: only use this to model facilitator disputant and then delete it
+//todo: only use this to model facilitator disputant and then delete it
+//todo: only use this to model facilitator disputant and then delete it
+//todo: only use this to model facilitator disputant and then delete it
+//todo: only use this to model facilitator disputant and then delete it
 @Data
 public abstract class AccessPoint extends BaseEntity implements Nameable, DisableAble {
 
@@ -18,6 +27,7 @@ public abstract class AccessPoint extends BaseEntity implements Nameable, Disabl
     private String name;                      // Trading/operating name
     private Boolean disabled;                 // Active/inactive status
     private ContactDetails contactDetails;     // Phone, email, etc.
+    private AccessPointType accessPointType;
 
     public abstract AccessPointType getAccessPointType();
 

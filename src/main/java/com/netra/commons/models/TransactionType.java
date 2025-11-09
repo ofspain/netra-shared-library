@@ -5,6 +5,7 @@ import com.netra.commons.contracts.DisableAble;
 import com.netra.commons.contracts.Nameable;
 import com.netra.commons.enums.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.util.List;
@@ -23,13 +24,13 @@ public class TransactionType extends BaseEntity implements Nameable, DisableAble
     @NotNull
     private TransactionAction action;
 
-    // allowable transaction instrument for this transaction type
+    // HOW money moves (network)
     @NotNull
-    private List<TransactionInstrument> instruments;
+    private PaymentRail paymentRail;
 
-    // which network/rail processes it: may not be applicable for our use case
+    // what was used to transact the transaction
     @NotNull
-    private List<TransactionProcessor> processors;
+    private TransactionInstrument instrument;
 
     // unique internal usage
     @NotBlank

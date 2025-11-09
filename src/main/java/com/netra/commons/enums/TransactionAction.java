@@ -1,15 +1,17 @@
 package com.netra.commons.enums;
 
 public enum TransactionAction {
-    WITHDRAWAL,          // cash out by customer (ATM, POS, Agency, etc.)
-    DEPOSIT,             // cash in (ATM deposit, agency deposit, etc.)
-    TRANSFER,            // funds movement between accounts
-    PURCHASE,            // goods/services payment
-    BILL_PAYMENT,        // utilities, telco, subscriptions, etc.
-    CASH_OUT,            // alias for agent-led or wallet cashout
-    CASH_IN,             // alias for agent-led or wallet cashin
-    REVERSAL,            // automated reversal
-    ADJUSTMENT,          // back-office correction
-    NA                   // fallback for undetermined types
+    WITHDRAWAL,
+    DEPOSIT,
+    TRANSFER,
+    PURCHASE,
+
+    AIRTIME_PURCHASE,
+    DATA_PURCHASE,
+    BILL_PAYMENT, //eg dstv subscription, electricity bill payment
+
+    STATUTORY_PAYMENT, //eg government required payment(eg cac registration, saction bills etc), school fees payment
+
+    SERVICE_PAYMENT, //eg basically payment for online services eg a google service, propertypro subscription
 }
 

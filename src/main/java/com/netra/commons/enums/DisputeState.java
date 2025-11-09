@@ -3,144 +3,209 @@ package com.netra.commons.enums;
 import java.util.EnumSet;
 import java.util.Set;
 
+/**
+ * Comprehensive Dispute Lifecycle State Enum (role-neutral).
+ * Each state optionally defines blockchain anchoring metadata
+ * for on-chain event notarization on Aptos.
+ */
 public enum DisputeState {
 
-
-    /* ---------------- PHASE 1: ENTERING POINT ---------------- */
-    BOOTSTRAPING_DISPUTE_CONTEXT(Phase.INITIALIZATION, false, false),
+    /* ---------------- PHASE 1: BOOTSTRAP ---------------- */
+    BOOTSTRAP_DISPUTE_CONTEXT(Phase.INITIALIZATION, true, BlockchainEventType.DISPUTE_CREATED),
 
     /* ---------------- PHASE 2: EVIDENCE VERIFICATION ---------------- */
-    AWAITING_EVIDENCE_VERIFICATION(Phase.EVIDENCE_VERIFICATION, false, true),
-    AWAITING_MANUAL_EVIDENCE_REVIEW(Phase.EVIDENCE_VERIFICATION, false, true),
-    EVIDENCE_VERIFIED(Phase.EVIDENCE_VERIFICATION, false, true),
-    EVIDENCE_REJECTED(Phase.EVIDENCE_VERIFICATION, false, true),
+    AWAITING_EVIDENCE_VERIFICATION(Phase.EVIDENCE_VERIFICATION, true, BlockchainEventType.EVIDENCE_SUBMITTED),
+    AWAITING_MANUAL_EVIDENCE_REVIEW(Phase.EVIDENCE_VERIFICATION, false, null),
+    EVIDENCE_VERIFIED(Phase.EVIDENCE_VERIFICATION, true, BlockchainEventType.EVIDENCE_ACCEPTED),
+    EVIDENCE_REJECTED(Phase.EVIDENCE_VERIFICATION, true, BlockchainEventType.EVIDENCE_REJECTED),
 
-    /* ---------------- PHASE 3: ISSUER–ACQUIRER VERIFICATION ---------------- */
-    AWAITING_ISSUER_VERIFICATION(Phase.PARTY_VERIFICATION, false, true),
-    AWAITING_ISSUER_VERIFICATION_ISSUER_UNREACHABLE(Phase.PARTY_VERIFICATION, false, true),
-    ISSUER_VERIFIED(Phase.PARTY_VERIFICATION, false, true),
-    ISSUER_DECLINED(Phase.PARTY_VERIFICATION, false, true),
+    /* ---------------- PHASE 3: PARTY VERIFICATION ---------------- */
+    AWAITING_PLAINTIFF_VERIFICATION(Phase.PARTY_VERIFICATION, false, null),
+    PLAINTIFF_VERIFIED(Phase.PARTY_VERIFICATION, true, BlockchainEventType.PLAINTIFF_VERIFIED),
+    PLAINTIFF_DECLINED(Phase.PARTY_VERIFICATION, true, BlockchainEventType.PLAINTIFF_DECLINED),
 
-    AWAITING_ACQUIRER_VERIFICATION(Phase.PARTY_VERIFICATION, false, true),
-    AWAITING_ACQUIRER_VERIFICATION_ISSUER_UNREACHABLE(Phase.PARTY_VERIFICATION, false, true),
-    ACQUIRER_VERIFIED(Phase.PARTY_VERIFICATION, false, true),
-    ACQUIRER_DECLINED(Phase.PARTY_VERIFICATION, false, true),
+    AWAITING_DEFENDANT_VERIFICATION(Phase.PARTY_VERIFICATION, false, null),
+    DEFENDANT_VERIFIED(Phase.PARTY_VERIFICATION, true, BlockchainEventType.DEFENDANT_VERIFIED),
+    DEFENDANT_DECLINED(Phase.PARTY_VERIFICATION, true, BlockchainEventType.DEFENDANT_DECLINED),
 
-    /* ---------------- PHASE 4: ARBITRATION ---------------- */
-    ARBITRATION_IN_PROGRESS(Phase.ARBITRATION, false, true),
-    ARBITRATION_ISSUER_ESCALATED_MANUAL_REVIEW(Phase.ARBITRATION, false, true),
-    ARBITRATION_ACQUIRER_ESCALATED_MANUAL_REVIEW(Phase.ARBITRATION, false, true),
-    ARBITRATION_MANUAL_REVIEW_RESOLVED_ISSUER_FAVOR(Phase.ARBITRATION, true, true),
-    ARBITRATION_MANUAL_REVIEW_RESOLVED_ACQUIRER_FAVOR(Phase.ARBITRATION, true, true),
-    ARBITRATION_RESOLVED_ISSUER_FAVOR(Phase.ARBITRATION, true, true),
-    ARBITRATION_RESOLVED_ACQUIRER_FAVOR(Phase.ARBITRATION, true, true),
+    /* ---------------- PHASE 4: ARBITRATION PROCESSOR ---------------- */
+    ARBITRATION_PROCESSOR_AWAITING_RESPONSE(Phase.ARBITRATION, true, BlockchainEventType.ARBITRATION_INITIATED),
+    ARBITRATION_PROCESSOR_RESOLVED_PLAINTIFF_FAVOR(Phase.ARBITRATION, true, BlockchainEventType.ARBITRATION_RULED_PLAINTIFF),
+    ARBITRATION_PROCESSOR_RESOLVED_DEFENDANT_FAVOR(Phase.ARBITRATION, true, BlockchainEventType.ARBITRATION_RULED_DEFENDANT),
+    ARBITRATION_PROCESSOR_RESOLVED_AMBIGUOUS(Phase.ARBITRATION, true, BlockchainEventType.ARBITRATION_AMBIGUOUS),
+    ARBITRATION_PROCESSOR_UNREACHABLE(Phase.ARBITRATION, false, null),
 
-    /* ---------------- PHASE 5: AUTHORITY ESCALATION ---------------- */
-    AUTHORITY_ISSUER_ESCALATED(Phase.AUTHORITY, false, false),
-    AUTHORITY_ACQUIRER_ESCALATED(Phase.AUTHORITY, false, false),
-    LOCKED(Phase.AUTHORITY, false, false),
+    /* ---------------- PHASE 5: MANUAL ARBITRATION REVIEW ---------------- */
+    ARBITRATION_AWAITING_MANUAL_REVIEW(Phase.ARBITRATION, false, null),
+    ARBITRATION_MANUAL_RESOLVED_PLAINTIFF_FAVOR(Phase.ARBITRATION, true, BlockchainEventType.MANUAL_ARBITRATION_RULED_PLAINTIFF),
+    ARBITRATION_MANUAL_RESOLVED_DEFENDANT_FAVOR(Phase.ARBITRATION, true, BlockchainEventType.MANUAL_ARBITRATION_RULED_DEFENDANT),
+    ARBITRATION_MANUAL_RESOLVED_AMBIGUOUS(Phase.ARBITRATION, true, BlockchainEventType.MANUAL_ARBITRATION_AMBIGUOUS),
 
-    /* ---------------- PHASE 6: WITHDRAWALS ---------------- */
-    WITHDRAWN_CUSTOMER(Phase.CLOSURE, true, false),
-    WITHDRAWN_ISSUER(Phase.CLOSURE, true, false),
-    WITHDRAWN_ACQUIRER(Phase.CLOSURE, true, false),
-    WITHDRAWN_ARBITRATION(Phase.CLOSURE, true, false),
-    WITHDRAWN_AUTHORITY(Phase.CLOSURE, true, false),
+    /* ---------------- PHASE 6: AUTHORITY ESCALATION ---------------- */
+    AUTHORITY_PLAINTIFF_ESCALATED(Phase.AUTHORITY, true, BlockchainEventType.AUTHORITY_ESCALATED_PLAINTIFF),
+    AUTHORITY_DEFENDANT_ESCALATED(Phase.AUTHORITY, true, BlockchainEventType.AUTHORITY_ESCALATED_DEFENDANT),
+    AUTHORITY_SYSTEM_ESCALATED(Phase.AUTHORITY, true, BlockchainEventType.AUTHORITY_ESCALATED_SYSTEM),
 
-    /* ---------------- PHASE 7: CLOSURE ---------------- */
-    CLOSED(Phase.CLOSURE, true, false);
+    /* ---------------- PHASE 7: WITHDRAWALS ---------------- */
+    WITHDRAWN_CUSTOMER(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_CUSTOMER),
+    WITHDRAWN_SUBDOMAIN(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_SUBDOMAIN),
+    WITHDRAWN_PLAINTIFF(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_PLAINTIFF),
+    WITHDRAWN_DEFENDANT(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_DEFENDANT),
+    WITHDRAWN_ARBITRATION(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_DURING_ARBITRATION),
 
-    /* ---------------- ENUM FIELDS ---------------- */
+    /* ---------------- PHASE 8: CLOSURE ---------------- */
+    EXPIRED(Phase.CLOSURE, true, BlockchainEventType.DISPUTE_EXPIRED),
+    CLOSED(Phase.CLOSURE, true, BlockchainEventType.DISPUTE_CLOSED);
+
     private final Phase phase;
-    private final boolean terminal;
-    private final boolean representmentEligible;
     private final Set<DisputeState> nextStates;
+    private final boolean isBlockchainLoggable;
+    private final BlockchainEventType blockchainEventType;
 
-    DisputeState(Phase phase, boolean terminal, boolean representmentEligible) {
+    DisputeState(Phase phase, boolean isBlockchainLoggable, BlockchainEventType blockchainEventType) {
         this.phase = phase;
-        this.terminal = terminal;
-        this.representmentEligible = representmentEligible;
+        this.isBlockchainLoggable = isBlockchainLoggable;
+        this.blockchainEventType = blockchainEventType;
         this.nextStates = EnumSet.noneOf(DisputeState.class);
     }
 
     static {
-        /* ---- Evidence Flow ---- */
+        /* ---- Phase 1: Bootstrap ---- */
+        BOOTSTRAP_DISPUTE_CONTEXT.nextStates.addAll(EnumSet.of(
+                AWAITING_EVIDENCE_VERIFICATION,
+                AWAITING_DEFENDANT_VERIFICATION
+        ));
+
+        /* ---- Phase 2: Evidence Verification ---- */
         AWAITING_EVIDENCE_VERIFICATION.nextStates.addAll(EnumSet.of(
-                EVIDENCE_VERIFIED, EVIDENCE_REJECTED, AWAITING_MANUAL_EVIDENCE_REVIEW, WITHDRAWN_CUSTOMER
+                EVIDENCE_VERIFIED,
+                EVIDENCE_REJECTED,
+                AWAITING_MANUAL_EVIDENCE_REVIEW,
+                WITHDRAWN_CUSTOMER,
+                EXPIRED
         ));
         AWAITING_MANUAL_EVIDENCE_REVIEW.nextStates.addAll(EnumSet.of(
-                EVIDENCE_VERIFIED, EVIDENCE_REJECTED, WITHDRAWN_CUSTOMER
+                EVIDENCE_VERIFIED,
+                EVIDENCE_REJECTED,
+                WITHDRAWN_CUSTOMER,
+                EXPIRED
         ));
         EVIDENCE_VERIFIED.nextStates.addAll(EnumSet.of(
-                AWAITING_ISSUER_VERIFICATION, AWAITING_ACQUIRER_VERIFICATION, WITHDRAWN_CUSTOMER
+                AWAITING_PLAINTIFF_VERIFICATION,
+                WITHDRAWN_CUSTOMER,
+                EXPIRED
         ));
         EVIDENCE_REJECTED.nextStates.addAll(EnumSet.of(
-                CLOSED, ARBITRATION_IN_PROGRESS, WITHDRAWN_CUSTOMER
+                CLOSED,
+                WITHDRAWN_CUSTOMER
         ));
 
-        /* ---- Issuer/Acquirer Flow ---- */
-        AWAITING_ISSUER_VERIFICATION.nextStates.addAll(EnumSet.of(
-                ISSUER_VERIFIED, ISSUER_DECLINED, AWAITING_ISSUER_VERIFICATION_ISSUER_UNREACHABLE, WITHDRAWN_ISSUER
+        /* ---- Phase 3: Party Verification ---- */
+        AWAITING_PLAINTIFF_VERIFICATION.nextStates.addAll(EnumSet.of(
+                PLAINTIFF_VERIFIED,
+                PLAINTIFF_DECLINED,
+                WITHDRAWN_PLAINTIFF,
+                EXPIRED
         ));
-        AWAITING_ISSUER_VERIFICATION_ISSUER_UNREACHABLE.nextStates.addAll(EnumSet.of(
-                AWAITING_ISSUER_VERIFICATION, ARBITRATION_IN_PROGRESS, WITHDRAWN_ISSUER
+        PLAINTIFF_VERIFIED.nextStates.addAll(EnumSet.of(
+                AWAITING_DEFENDANT_VERIFICATION,
+                WITHDRAWN_PLAINTIFF,
+                EXPIRED
         ));
-        ISSUER_VERIFIED.nextStates.addAll(EnumSet.of(
-                AWAITING_ACQUIRER_VERIFICATION, CLOSED, WITHDRAWN_ISSUER
-        ));
-        ISSUER_DECLINED.nextStates.addAll(EnumSet.of(
-                AWAITING_ACQUIRER_VERIFICATION, ARBITRATION_IN_PROGRESS, WITHDRAWN_ISSUER
-        ));
-
-        AWAITING_ACQUIRER_VERIFICATION.nextStates.addAll(EnumSet.of(
-                ACQUIRER_VERIFIED, ACQUIRER_DECLINED, AWAITING_ACQUIRER_VERIFICATION_ISSUER_UNREACHABLE, WITHDRAWN_ACQUIRER
-        ));
-        AWAITING_ACQUIRER_VERIFICATION_ISSUER_UNREACHABLE.nextStates.addAll(EnumSet.of(
-                AWAITING_ACQUIRER_VERIFICATION, ARBITRATION_IN_PROGRESS, WITHDRAWN_ACQUIRER
-        ));
-        ACQUIRER_VERIFIED.nextStates.addAll(EnumSet.of(
-                CLOSED, ARBITRATION_IN_PROGRESS, WITHDRAWN_ACQUIRER
-        ));
-        ACQUIRER_DECLINED.nextStates.addAll(EnumSet.of(
-                CLOSED, WITHDRAWN_ACQUIRER
+        PLAINTIFF_DECLINED.nextStates.addAll(EnumSet.of(
+                CLOSED,
+                ARBITRATION_PROCESSOR_AWAITING_RESPONSE,
+                WITHDRAWN_PLAINTIFF
         ));
 
-        /* ---- Arbitration Flow ---- */
-        ARBITRATION_IN_PROGRESS.nextStates.addAll(EnumSet.of(
-                ARBITRATION_RESOLVED_ISSUER_FAVOR,
-                ARBITRATION_RESOLVED_ACQUIRER_FAVOR,
-                ARBITRATION_ISSUER_ESCALATED_MANUAL_REVIEW,
-                ARBITRATION_ACQUIRER_ESCALATED_MANUAL_REVIEW,
+        AWAITING_DEFENDANT_VERIFICATION.nextStates.addAll(EnumSet.of(
+                DEFENDANT_VERIFIED,
+                DEFENDANT_DECLINED,
+                WITHDRAWN_DEFENDANT,
+                EXPIRED
+        ));
+        DEFENDANT_VERIFIED.nextStates.addAll(EnumSet.of(
+                CLOSED,
+                EXPIRED
+        ));
+        DEFENDANT_DECLINED.nextStates.addAll(EnumSet.of(
+                ARBITRATION_PROCESSOR_AWAITING_RESPONSE,
+                WITHDRAWN_DEFENDANT
+        ));
+
+        /* ---- Phase 4: Arbitration Processor ---- */
+        ARBITRATION_PROCESSOR_AWAITING_RESPONSE.nextStates.addAll(EnumSet.of(
+                ARBITRATION_PROCESSOR_RESOLVED_PLAINTIFF_FAVOR,
+                ARBITRATION_PROCESSOR_RESOLVED_DEFENDANT_FAVOR,
+                ARBITRATION_PROCESSOR_RESOLVED_AMBIGUOUS,
+                ARBITRATION_PROCESSOR_UNREACHABLE,
+                WITHDRAWN_ARBITRATION,
+                EXPIRED
+        ));
+        ARBITRATION_PROCESSOR_RESOLVED_PLAINTIFF_FAVOR.nextStates.addAll(EnumSet.of(
+                AUTHORITY_DEFENDANT_ESCALATED,
+                CLOSED,
                 WITHDRAWN_ARBITRATION
         ));
-        ARBITRATION_ISSUER_ESCALATED_MANUAL_REVIEW.nextStates.addAll(EnumSet.of(
-                ARBITRATION_MANUAL_REVIEW_RESOLVED_ISSUER_FAVOR,
-                ARBITRATION_MANUAL_REVIEW_RESOLVED_ACQUIRER_FAVOR,
+        ARBITRATION_PROCESSOR_RESOLVED_DEFENDANT_FAVOR.nextStates.addAll(EnumSet.of(
+                AUTHORITY_PLAINTIFF_ESCALATED,
+                CLOSED,
                 WITHDRAWN_ARBITRATION
         ));
-        ARBITRATION_ACQUIRER_ESCALATED_MANUAL_REVIEW.nextStates.addAll(EnumSet.of(
-                ARBITRATION_MANUAL_REVIEW_RESOLVED_ISSUER_FAVOR,
-                ARBITRATION_MANUAL_REVIEW_RESOLVED_ACQUIRER_FAVOR,
+        ARBITRATION_PROCESSOR_RESOLVED_AMBIGUOUS.nextStates.addAll(EnumSet.of(
+                ARBITRATION_AWAITING_MANUAL_REVIEW,
+                AUTHORITY_SYSTEM_ESCALATED,
+                CLOSED
+        ));
+        ARBITRATION_PROCESSOR_UNREACHABLE.nextStates.addAll(EnumSet.of(
+                ARBITRATION_AWAITING_MANUAL_REVIEW,
+                AUTHORITY_SYSTEM_ESCALATED,
+                EXPIRED
+        ));
+
+        /* ---- Phase 5: Manual Arbitration Review ---- */
+        ARBITRATION_AWAITING_MANUAL_REVIEW.nextStates.addAll(EnumSet.of(
+                ARBITRATION_MANUAL_RESOLVED_PLAINTIFF_FAVOR,
+                ARBITRATION_MANUAL_RESOLVED_DEFENDANT_FAVOR,
+                ARBITRATION_MANUAL_RESOLVED_AMBIGUOUS,
+                EXPIRED
+        ));
+        ARBITRATION_MANUAL_RESOLVED_PLAINTIFF_FAVOR.nextStates.addAll(EnumSet.of(
+                AUTHORITY_PLAINTIFF_ESCALATED,
+                CLOSED,
                 WITHDRAWN_ARBITRATION
         ));
-        ARBITRATION_MANUAL_REVIEW_RESOLVED_ISSUER_FAVOR.nextStates.addAll(EnumSet.of(CLOSED));
-        ARBITRATION_MANUAL_REVIEW_RESOLVED_ACQUIRER_FAVOR.nextStates.addAll(EnumSet.of(CLOSED));
-        ARBITRATION_RESOLVED_ISSUER_FAVOR.nextStates.addAll(EnumSet.of(CLOSED));
-        ARBITRATION_RESOLVED_ACQUIRER_FAVOR.nextStates.addAll(EnumSet.of(CLOSED));
+        ARBITRATION_MANUAL_RESOLVED_DEFENDANT_FAVOR.nextStates.addAll(EnumSet.of(
+                AUTHORITY_DEFENDANT_ESCALATED,
+                CLOSED,
+                WITHDRAWN_ARBITRATION
+        ));
+        ARBITRATION_MANUAL_RESOLVED_AMBIGUOUS.nextStates.addAll(EnumSet.of(
+                AUTHORITY_SYSTEM_ESCALATED,
+                CLOSED
+        ));
 
-        /* ---- Authority Flow ---- */
-        AUTHORITY_ISSUER_ESCALATED.nextStates.addAll(EnumSet.of(LOCKED, CLOSED, WITHDRAWN_AUTHORITY));
-        AUTHORITY_ACQUIRER_ESCALATED.nextStates.addAll(EnumSet.of(LOCKED, CLOSED, WITHDRAWN_AUTHORITY));
+        /* ---- Phase 6: Authority Escalation ---- */
+        AUTHORITY_PLAINTIFF_ESCALATED.nextStates.addAll(EnumSet.of(CLOSED));
+        AUTHORITY_DEFENDANT_ESCALATED.nextStates.addAll(EnumSet.of(CLOSED));
+        AUTHORITY_SYSTEM_ESCALATED.nextStates.addAll(EnumSet.of(CLOSED));
 
-        /* ---- Locked & Closed ---- */
-        LOCKED.nextStates.addAll(EnumSet.of(CLOSED));
+        /* ---- Phase 7: Withdrawals ---- */
+        WITHDRAWN_CUSTOMER.nextStates.addAll(EnumSet.of(CLOSED));
+        WITHDRAWN_SUBDOMAIN.nextStates.addAll(EnumSet.of(CLOSED));
+        WITHDRAWN_PLAINTIFF.nextStates.addAll(EnumSet.of(CLOSED));
+        WITHDRAWN_DEFENDANT.nextStates.addAll(EnumSet.of(CLOSED));
+        WITHDRAWN_ARBITRATION.nextStates.addAll(EnumSet.of(CLOSED));
+
+        /* ---- Phase 8: Closure ---- */
+        EXPIRED.nextStates.addAll(EnumSet.of(CLOSED));
         CLOSED.nextStates.addAll(EnumSet.noneOf(DisputeState.class));
     }
 
     public Phase getPhase() { return phase; }
-    public boolean isTerminal() { return terminal; }
-    public boolean isRepresentmentEligible() { return representmentEligible; }
     public Set<DisputeState> getNextStates() { return nextStates; }
+    public boolean isBlockchainLoggable() { return isBlockchainLoggable; }
+    public BlockchainEventType getBlockchainEventType() { return blockchainEventType; }
 
     public enum Phase {
         INITIALIZATION,
@@ -150,7 +215,32 @@ public enum DisputeState {
         AUTHORITY,
         CLOSURE
     }
+
+    public enum BlockchainEventType {
+        DISPUTE_CREATED,
+        EVIDENCE_SUBMITTED,
+        EVIDENCE_ACCEPTED,
+        EVIDENCE_REJECTED,
+        PLAINTIFF_VERIFIED,
+        PLAINTIFF_DECLINED,
+        DEFENDANT_VERIFIED,
+        DEFENDANT_DECLINED,
+        ARBITRATION_INITIATED,
+        ARBITRATION_RULED_PLAINTIFF,
+        ARBITRATION_RULED_DEFENDANT,
+        ARBITRATION_AMBIGUOUS,
+        MANUAL_ARBITRATION_RULED_PLAINTIFF,
+        MANUAL_ARBITRATION_RULED_DEFENDANT,
+        MANUAL_ARBITRATION_AMBIGUOUS,
+        AUTHORITY_ESCALATED_PLAINTIFF,
+        AUTHORITY_ESCALATED_DEFENDANT,
+        AUTHORITY_ESCALATED_SYSTEM,
+        WITHDRAWN_BY_CUSTOMER,
+        WITHDRAWN_BY_SUBDOMAIN,
+        WITHDRAWN_BY_PLAINTIFF,
+        WITHDRAWN_BY_DEFENDANT,
+        WITHDRAWN_DURING_ARBITRATION,
+        DISPUTE_EXPIRED,
+        DISPUTE_CLOSED
+    }
 }
-
-
-

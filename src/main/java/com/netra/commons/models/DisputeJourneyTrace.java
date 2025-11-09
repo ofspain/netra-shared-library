@@ -10,19 +10,37 @@ public class DisputeJourneyTrace extends BaseEntity implements BlockchainAuditab
     private DisputeState fromState;
     private DisputeState toState;
     private LocalDateTime transitionTime;
-    private String initiatedBy; // issuer, system, acquirer, regulator
-    private String initiatedByCode; // issuer, system, acquirer, regulator
-    private Long initiatedById; // issuer, system, acquirer, regulator
 
-    private String reason;       // Optional freeform or enum (e.g. "issuer verified debit")
-    private String applicationChannel;      // e.g., API, AdminConsole, DisputantWEDPortal, DisputantMobilePortal
+    private String initiatedBy;       // e.g. ISSUER, ACQUIRER, SYSTEM
+    private String initiatedByCode;
+    private Long initiatedById;
 
-    private String currentHash;
+    private String reason;            // e.g. "Issuer Verified Funds"
+    private String applicationChannel;// e.g. API, PORTAL
+
+    private String currentHash;       // local chain hash
     private String previousHash;
+    private String auditTrace;        // can store serialized JSON of the trace
 
-    private String auditTrace;
+    private String digitalSignature;  // optional signature
+    private String aptosTxnHash;      // <-- NEW: on-chain transaction reference
+    private String aptosEventRef;     // <-- NEW: event or proof reference
 
-    private String digitalSignature;
+    public String getAptosEventRef() {
+        return aptosEventRef;
+    }
+
+    public String getAptosTxnHash(){
+        return aptosTxnHash;
+    }
+
+    public void setAptosEventRef(String aptosEventRef) {
+        this.aptosEventRef = aptosEventRef;
+    }
+
+    public void setAptosTxnHash(String aptosTxnHash) {
+        this.aptosTxnHash = aptosTxnHash;
+    }
 
     public String getDisputeId() {
         return disputeId;

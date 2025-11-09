@@ -1,13 +1,16 @@
 package com.netra.commons.requests.util;
 
-import com.netra.commons.enums.TransactionProcessor;
+import com.netra.commons.enums.Facilitator;
+import com.netra.commons.enums.PaymentGateway;
+import com.netra.commons.enums.PaymentRail;
 import com.netra.commons.enums.TransactionInstrument;
 import lombok.Data;
 @Data
 public class TransactionRailDTO {
-    private TransactionInstrument instrument;    // e.g., POS_DEVICE, ATM, MOBILE_APP
-    private String instrumentId;    // e.g., Terminal ID, ATM ID, Device ID
-    private TransactionProcessor channel;   // e.g., POS_SWITCH, CARD_SCHEME
-    private ChannelProviderSummaryDTO channelProvider;        // e.g., charmswitch
+    private TransactionInstrument instrument;
+    private PaymentRail paymentRail;
+    private PaymentGateway paymentGateway;
+    private Facilitator facilitator;
+    private String instrumentId;
 }
 

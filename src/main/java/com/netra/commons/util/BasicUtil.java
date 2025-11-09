@@ -8,10 +8,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @UtilityClass
 public class BasicUtil {
@@ -118,5 +115,14 @@ public class BasicUtil {
     public static String decodeStringFromURL(String encoded) {
         return new String(Base64.getUrlDecoder()
                 .decode(encoded), StandardCharsets.UTF_8);
+    }
+
+    public static <E extends Enum<E>> E safeEnum(Class<E> enumClass, String value) {
+        try { return Enum.valueOf(enumClass, value); }
+        catch (Exception e) { return null; }
+    }
+
+    public static boolean validList(List<?> x) {
+        return x != null && x.stream().anyMatch(Objects::nonNull);
     }
 }

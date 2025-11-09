@@ -14,7 +14,7 @@ public class AccountDetail extends BaseEntity implements DisableAble {
 
     private AccountType accountType;
 
-    private FinancialInstitution issuingInstitution;
+    private FinancialInstitution issuingInstitution; //financial institution that host this account
 
     private CardDTO card;
 

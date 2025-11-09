@@ -1,10 +1,9 @@
 package com.netra.commons.validators;
 
+import com.netra.commons.enums.*;
+import com.netra.commons.util.BasicUtil;
 import com.netra.commons.validators.annotations.ValidDisputeRequest;
 import com.netra.commons.contracts.Disputant;
-import com.netra.commons.enums.DisputantType;
-import com.netra.commons.enums.DisputeAmountType;
-import com.netra.commons.enums.TransactionParticipationRole;
 import com.netra.commons.models.*;
 import com.netra.commons.requests.CreateDisputeRequest;
 import com.netra.commons.requests.util.TransactionRailDTO;
@@ -13,6 +12,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class DisputeRequestValidator implements ConstraintValidator<ValidDisputeRequest, CreateDisputeRequest> {
@@ -32,7 +32,86 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
             context.buildConstraintViolationWithTemplate("Channel of submit is required.")
                     .addPropertyNode("applicationChannel")
                     .addConstraintViolation();
+            valid = false;
         }
+
+        if(null == request.getTransactionAmount() || request.getTransactionAmount().compareTo(BigDecimal.ZERO) <= 0 ){
+            context.buildConstraintViolationWithTemplate("Valid transaction amount is required.")
+                    .addPropertyNode("transactionAmount")
+                    .addConstraintViolation();
+            valid = false;
+        }
+        LocalDateTime transactionDate = request.getTransactionDate();
+        if(null == transactionDate){
+            context.buildConstraintViolationWithTemplate("Valid transaction date is required")
+                    .addPropertyNode("transactionDate")
+                    .addConstraintViolation();
+            valid = false;
+        }else if (transactionDate.toLocalDate().isAfter(LocalDate.now())) {
+            context.buildConstraintViolationWithTemplate("Transaction date cannot be in the future.")
+                    .addPropertyNode("transactionDate")
+                    .addConstraintViolation();
+            valid = false;
+        }
+
+
+
+        if(null == request.getTransactionAction()){
+            context.buildConstraintViolationWithTemplate("Valid transaction action(mode) is required")
+                    .addPropertyNode("transactionAction")
+                    .addConstraintViolation();
+            valid = false;
+        }
+
+        TransactionRailDTO transactionRail = request.getTransactionRail();
+
+        if(null == transactionRail){
+            context.buildConstraintViolationWithTemplate("Valid transaction rail is required")
+                    .addPropertyNode("transactionRail")
+                    .addConstraintViolation();
+            valid = false;
+        }else{
+            TransactionInstrument instrument = transactionRail.getInstrument();
+            PaymentRail paymentRail = transactionRail.getPaymentRail();
+
+            if(null == instrument){
+                context.buildConstraintViolationWithTemplate("Valid transaction instrument is required")
+                        .addPropertyNode("transactionRail.instrument")
+                        .addConstraintViolation();
+                valid = false;
+            }else if(instrument.equals(TransactionInstrument.WEB_PORTAL) || instrument.equals(TransactionInstrument.MOBILE_APP)){
+                AccountDetail beneficiaryAccount = request.getBeneficiaryAccount();
+                if(null == beneficiaryAccount){
+                    context.buildConstraintViolationWithTemplate("Valid Beneficiary Account is required for internet based transaction")
+                            .addPropertyNode("beneficiaryAccount")
+                            .addConstraintViolation();
+                    valid = false;
+                }else{
+                    if(!BasicUtil.validString(beneficiaryAccount.getAccountNumber())){//may add validation of account number....lenght and all numeric
+                        context.buildConstraintViolationWithTemplate("Valid Account Number is required for internet based transaction")
+                                .addPropertyNode("beneficiaryAccount.accountNumber")
+                                .addConstraintViolation();
+                        valid = false;
+                    }
+                    if(null == beneficiaryAccount.getIssuingInstitution()){
+                        context.buildConstraintViolationWithTemplate("Valid Financial Institution is required for internet based transaction")
+                                .addPropertyNode("beneficiaryAccount.issuingInstitution")
+                                .addConstraintViolation();
+                        valid = false;
+                    }
+                }
+            }
+
+            if(null == paymentRail ){
+                context.buildConstraintViolationWithTemplate("Valid payment rail is required")
+                        .addPropertyNode("transactionRail.paymentRail")
+                        .addConstraintViolation();
+                valid = false;
+            }
+
+        }
+
+
 
         // Rule 2: If PARTIAL, then disputedAmount must be valid
         DisputeAmountType disputeAmountType = request.getDisputeAmountType();
@@ -51,23 +130,17 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
             context.buildConstraintViolationWithTemplate("Initiator is required.")
                     .addPropertyNode("initiator")
                     .addConstraintViolation();
-            return false;
+            valid = false;
         }
 
         DisputantType type = initiator.getDisputantType();
 
         switch (type) {
             case CUSTOMERUSER:
-                if (!hasParticipantWithRole(request.getParticipants(), TransactionParticipationRole.ISSUER)) {
-                    context.buildConstraintViolationWithTemplate("At least one ISSUER participant is required for CUSTOMERUSER.")
-                            .addPropertyNode("participants")
-                            .addConstraintViolation();
-                    valid = false;
-                }
 
-                if (request.getAccountDetail() == null) {
+                if (request.getAffectedAccount() == null) {
                     context.buildConstraintViolationWithTemplate("Account details are required for CUSTOMERUSER.")
-                            .addPropertyNode("accountDetail")
+                            .addPropertyNode("affectedAccount")
                             .addConstraintViolation();
                     valid = false;
                 }
@@ -81,71 +154,41 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
                 break;
 
             case INSTITUTIONUSER:
-                boolean hasAcquirer = hasParticipantWithRole(request.getParticipants(), TransactionParticipationRole.ACQUIRER);
-                boolean hasIssuer = hasParticipantWithRole(request.getParticipants(), TransactionParticipationRole.ISSUER);
-                boolean hasProcessor = hasParticipantWithRole(request.getParticipants(), TransactionParticipationRole.SWITCHER);
+                CreateDisputeRequest.DisputingAs disputingAs = request.getDisputingAs();
+                if(null == disputingAs){
+                    context.buildConstraintViolationWithTemplate("Disputing AS is required for INSTITUTIONUSER.")
+                            .addPropertyNode("disputingAs")
+                            .addConstraintViolation();
+                    valid = false;
+                }else{
+                   if(disputingAs.equals(CreateDisputeRequest.DisputingAs.ISSUER)){
+                     //must issuer always know the acquirer?
+                   }
 
-                if (!hasAcquirer || !hasIssuer) {
-                    context.buildConstraintViolationWithTemplate("SWITCH, ACQUIRER AND ISSUER  participants are required for INSTITUTIONUSER.")
-                            .addPropertyNode("participants")
+                    if(disputingAs.equals(CreateDisputeRequest.DisputingAs.ISSUER)){
+
+                    }
+                }
+
+                break;
+            case DISPUTANTFACILITATOR:
+                FinancialInstitution acquirer = request.getAcquirer();
+                if(null == acquirer){
+                    context.buildConstraintViolationWithTemplate("Acquiring Institution is required for a disputant facilitator")
+                            .addPropertyNode("acquirer")
                             .addConstraintViolation();
                     valid = false;
                 }
-                break;
 
             default:
                 // Unknown or unsupported disputant type can be handled here if necessary
                 break;
         }
 
-        // Rule 4: Basic transaction validation
-        Transaction txn = request.getTransaction();
-        if (txn == null) {
-            context.buildConstraintViolationWithTemplate("Transaction is required.")
-                    .addPropertyNode("transaction")
-                    .addConstraintViolation();
-            valid = false;
-        } else {
-            if (txn.getAmount() == null || txn.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-                context.buildConstraintViolationWithTemplate("Transaction amount must be positive.")
-                        .addPropertyNode("transaction.amount")
-                        .addConstraintViolation();
-                valid = false;
-            }
-            if (txn.getTransactionRef() == null || txn.getTransactionRef().trim().isEmpty()) {
-                context.buildConstraintViolationWithTemplate("Transaction reference is required.")
-                        .addPropertyNode("transaction.transactionRef")
-                        .addConstraintViolation();
-                valid = false;
-            }
-            if (txn.getTransactionDate() == null) {
-                context.buildConstraintViolationWithTemplate("Transaction date is required.")
-                        .addPropertyNode("transaction.transactionDate")
-                        .addConstraintViolation();
-                valid = false;
-            }
-            if (txn.getTransactionDate().toLocalDate().isAfter(LocalDate.now())) {
-                context.buildConstraintViolationWithTemplate("Transaction date cannot be in the future.")
-                        .addPropertyNode("transaction.transactionDate")
-                        .addConstraintViolation();
-                valid = false;
-            }
 
-            TransactionRailDTO rail = txn.getTransactionRail();
-            if (rail == null || rail.getInstrumentId() == null || rail.getInstrumentId().isEmpty()) {
-                context.buildConstraintViolationWithTemplate("Transaction instrument ID is required.")
-                        .addPropertyNode("transaction.transactionRailDTO.instrumentId")
-                        .addConstraintViolation();
-                valid = false;
-            }
-        }
 
         return valid;
     }
 
-    private boolean hasParticipantWithRole(List<TransactionParticipant> participants, TransactionParticipationRole role) {
-        if (participants == null) return false;
-        return participants.stream().anyMatch(p -> p.getTransactionParticipationRole() == role);
-    }
 }
 
