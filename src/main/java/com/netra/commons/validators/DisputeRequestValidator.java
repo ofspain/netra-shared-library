@@ -35,6 +35,13 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
             valid = false;
         }
 
+        if(null == request.getDisputeMode()){
+            context.buildConstraintViolationWithTemplate("Dispute type is required.")
+                    .addPropertyNode("disputeMode")
+                    .addConstraintViolation();
+            valid = false;
+        }
+
         if(null == request.getTransactionAmount() || request.getTransactionAmount().compareTo(BigDecimal.ZERO) <= 0 ){
             context.buildConstraintViolationWithTemplate("Valid transaction amount is required.")
                     .addPropertyNode("transactionAmount")
@@ -125,7 +132,7 @@ public class DisputeRequestValidator implements ConstraintValidator<ValidDispute
         }
 
         // Rule 3 & 4: Based on Disputant Type
-        Disputant initiator = request.getInitiator();
+        BaseUser initiator = request.getInitiator();
         if (initiator == null) {
             context.buildConstraintViolationWithTemplate("Initiator is required.")
                     .addPropertyNode("initiator")

@@ -5,10 +5,7 @@ import com.netra.commons.enums.ApplicationChannel;
 import com.netra.commons.enums.DisputeMode;
 import com.netra.commons.enums.DisputeAmountType;
 import com.netra.commons.enums.TransactionAction;
-import com.netra.commons.models.AccountDetail;
-import com.netra.commons.models.Evidence;
-import com.netra.commons.models.FacilitatorDisputant;
-import com.netra.commons.models.FinancialInstitution;
+import com.netra.commons.models.*;
 import com.netra.commons.requests.util.TransactionRailDTO;
 import com.netra.commons.validators.annotations.ValidDisputeRequest;
 import lombok.Data;
@@ -21,11 +18,11 @@ import java.util.List;
 @ValidDisputeRequest
 public class CreateDisputeRequest {
 
-    private Disputant initiator;//host id, disputant_type
+    private BaseUser initiator;//host id, disputant_type
 
     private DisputingAs disputingAs;
 
-    private List<Evidence> evidences;
+    private List<String> evidences;//base 64 encoded string with all metadata...to get mime
     private DisputeAmountType disputeAmountType;
     private DisputeMode mode;
     private String note;
@@ -51,6 +48,7 @@ public class CreateDisputeRequest {
     private String authCode;
     private BigDecimal transactionAmount;
     private LocalDateTime transactionDate;
+    private DisputeMode disputeMode;
 
 
     public enum DisputingAs{

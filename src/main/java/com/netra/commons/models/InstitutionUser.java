@@ -7,7 +7,7 @@ import com.netra.commons.enums.DomainType;
 import lombok.Data;
 
 @Data
-public class InstitutionUser extends BaseEntity implements Disputant, DisableAble {
+public class InstitutionUser  extends BaseUser{
 
     private String name;
     private Boolean disabled;

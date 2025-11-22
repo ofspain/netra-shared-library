@@ -1,5 +1,7 @@
 package com.netra.commons.util;
 
+import com.netra.commons.enums.DisputeState;
+import com.netra.commons.enums.DisputeTransitionEvent;
 import lombok.experimental.UtilityClass;
 import org.hashids.Hashids;
 
@@ -9,6 +11,9 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static com.netra.commons.enums.DisputeState.*;
+import static com.netra.commons.enums.DisputeTransitionEvent.*;
 
 @UtilityClass
 public class BasicUtil {
@@ -125,4 +130,16 @@ public class BasicUtil {
     public static boolean validList(List<?> x) {
         return x != null && x.stream().anyMatch(Objects::nonNull);
     }
+
+    public static Map<DisputeTransitionEvent, DisputeState> getWithdrawalRoutingMap(){
+        Map<DisputeTransitionEvent, DisputeState> withdrawalRoutingMap = Map.of(
+            EVENT_CUSTOMER_WITHDRAWS, WITHDRAWN_CUSTOMER,
+            EVENT_PLAINTIFF_WITHDRAWS, WITHDRAWN_PLAINTIFF,
+            EVENT_RESPONDER_WITHDRAWS, WITHDRAWN_RESPONDER,
+            EVENT_SUB_INSTITUTION_WITHDRAWS, WITHDRAWN_SUB_INSTITUTION
+        );
+
+        return withdrawalRoutingMap;
+    }
+
 }

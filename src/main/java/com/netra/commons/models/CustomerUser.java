@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class CustomerUser extends BaseEntity implements Disputant, DisableAble {
+public class CustomerUser extends BaseUser{
 
     private String name;
     private Boolean disabled;

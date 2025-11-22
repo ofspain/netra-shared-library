@@ -4,58 +4,74 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * Comprehensive Dispute Lifecycle State Enum (role-neutral).
- * Each state optionally defines blockchain anchoring metadata
- * for on-chain event notarization on Aptos.
+ * Simplified Dispute Lifecycle State Enum with hierarchical support.
+ * Parent states allow global transitions (like withdrawals) without duplication.
  */
 public enum DisputeState {
 
-    /* ---------------- PHASE 1: BOOTSTRAP ---------------- */
+    /* ========== PARENT STATES ========== */
+
+    // 🏠 ACTIVE - All ongoing processing states
+    ACTIVE(Phase.ACTIVE, false, null),
+
+    // 🏠 TERMINAL - All final states
+    TERMINAL(Phase.CLOSURE, false, null),
+
+    // 🏠 WITHDRAWN - All withdrawal states
+    WITHDRAWN(Phase.CLOSURE, false, null),
+
+
+    /* ========== ACTIVE CHILD STATES ========== */
+
+    /* ---------------- INITIALIZATION ---------------- */
     BOOTSTRAP_DISPUTE_CONTEXT(Phase.INITIALIZATION, true, BlockchainEventType.DISPUTE_CREATED),
 
-    /* ---------------- PHASE 2: EVIDENCE VERIFICATION ---------------- */
+    /* ---------------- EVIDENCE VERIFICATION ---------------- */
     AWAITING_EVIDENCE_VERIFICATION(Phase.EVIDENCE_VERIFICATION, true, BlockchainEventType.EVIDENCE_SUBMITTED),
     AWAITING_MANUAL_EVIDENCE_REVIEW(Phase.EVIDENCE_VERIFICATION, false, null),
     EVIDENCE_VERIFIED(Phase.EVIDENCE_VERIFICATION, true, BlockchainEventType.EVIDENCE_ACCEPTED),
     EVIDENCE_REJECTED(Phase.EVIDENCE_VERIFICATION, true, BlockchainEventType.EVIDENCE_REJECTED),
 
-    /* ---------------- PHASE 3: PARTY VERIFICATION ---------------- */
+    /* ---------------- PARTY VERIFICATION ---------------- */
     AWAITING_PLAINTIFF_VERIFICATION(Phase.PARTY_VERIFICATION, false, null),
     PLAINTIFF_VERIFIED(Phase.PARTY_VERIFICATION, true, BlockchainEventType.PLAINTIFF_VERIFIED),
     PLAINTIFF_DECLINED(Phase.PARTY_VERIFICATION, true, BlockchainEventType.PLAINTIFF_DECLINED),
 
-    AWAITING_DEFENDANT_VERIFICATION(Phase.PARTY_VERIFICATION, false, null),
-    DEFENDANT_VERIFIED(Phase.PARTY_VERIFICATION, true, BlockchainEventType.DEFENDANT_VERIFIED),
-    DEFENDANT_DECLINED(Phase.PARTY_VERIFICATION, true, BlockchainEventType.DEFENDANT_DECLINED),
+    AWAITING_RESPONDER_VERIFICATION(Phase.PARTY_VERIFICATION, false, null),
+    RESPONDER_VERIFIED(Phase.PARTY_VERIFICATION, true, BlockchainEventType.RESPONDER_VERIFIED),
+    RESPONDER_DECLINED(Phase.PARTY_VERIFICATION, true, BlockchainEventType.RESPONDER_DECLINED),
 
-    /* ---------------- PHASE 4: ARBITRATION PROCESSOR ---------------- */
+    /* ---------------- ARBITRATION ---------------- */
     ARBITRATION_PROCESSOR_AWAITING_RESPONSE(Phase.ARBITRATION, true, BlockchainEventType.ARBITRATION_INITIATED),
     ARBITRATION_PROCESSOR_RESOLVED_PLAINTIFF_FAVOR(Phase.ARBITRATION, true, BlockchainEventType.ARBITRATION_RULED_PLAINTIFF),
-    ARBITRATION_PROCESSOR_RESOLVED_DEFENDANT_FAVOR(Phase.ARBITRATION, true, BlockchainEventType.ARBITRATION_RULED_DEFENDANT),
+    ARBITRATION_PROCESSOR_RESOLVED_RESPONDER_FAVOR(Phase.ARBITRATION, true, BlockchainEventType.ARBITRATION_RULED_RESPONDER),
     ARBITRATION_PROCESSOR_RESOLVED_AMBIGUOUS(Phase.ARBITRATION, true, BlockchainEventType.ARBITRATION_AMBIGUOUS),
     ARBITRATION_PROCESSOR_UNREACHABLE(Phase.ARBITRATION, false, null),
 
-    /* ---------------- PHASE 5: MANUAL ARBITRATION REVIEW ---------------- */
     ARBITRATION_AWAITING_MANUAL_REVIEW(Phase.ARBITRATION, false, null),
     ARBITRATION_MANUAL_RESOLVED_PLAINTIFF_FAVOR(Phase.ARBITRATION, true, BlockchainEventType.MANUAL_ARBITRATION_RULED_PLAINTIFF),
-    ARBITRATION_MANUAL_RESOLVED_DEFENDANT_FAVOR(Phase.ARBITRATION, true, BlockchainEventType.MANUAL_ARBITRATION_RULED_DEFENDANT),
+    ARBITRATION_MANUAL_RESOLVED_RESPONDER_FAVOR(Phase.ARBITRATION, true, BlockchainEventType.MANUAL_ARBITRATION_RULED_RESPONDER),
     ARBITRATION_MANUAL_RESOLVED_AMBIGUOUS(Phase.ARBITRATION, true, BlockchainEventType.MANUAL_ARBITRATION_AMBIGUOUS),
 
-    /* ---------------- PHASE 6: AUTHORITY ESCALATION ---------------- */
+    /* ---------------- AUTHORITY ESCALATION ---------------- */
     AUTHORITY_PLAINTIFF_ESCALATED(Phase.AUTHORITY, true, BlockchainEventType.AUTHORITY_ESCALATED_PLAINTIFF),
-    AUTHORITY_DEFENDANT_ESCALATED(Phase.AUTHORITY, true, BlockchainEventType.AUTHORITY_ESCALATED_DEFENDANT),
+    AUTHORITY_RESPONDER_ESCALATED(Phase.AUTHORITY, true, BlockchainEventType.AUTHORITY_ESCALATED_RESPONDER),
     AUTHORITY_SYSTEM_ESCALATED(Phase.AUTHORITY, true, BlockchainEventType.AUTHORITY_ESCALATED_SYSTEM),
 
-    /* ---------------- PHASE 7: WITHDRAWALS ---------------- */
-    WITHDRAWN_CUSTOMER(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_CUSTOMER),
-    WITHDRAWN_SUBDOMAIN(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_SUBDOMAIN),
-    WITHDRAWN_PLAINTIFF(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_PLAINTIFF),
-    WITHDRAWN_DEFENDANT(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_DEFENDANT),
-    WITHDRAWN_ARBITRATION(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_DURING_ARBITRATION),
-
-    /* ---------------- PHASE 8: CLOSURE ---------------- */
+    /* ---------------- EXPIRATION ---------------- */
     EXPIRED(Phase.CLOSURE, true, BlockchainEventType.DISPUTE_EXPIRED),
-    CLOSED(Phase.CLOSURE, true, BlockchainEventType.DISPUTE_CLOSED);
+
+
+    /* ========== TERMINAL CHILD STATES ========== */
+    CLOSED(Phase.CLOSURE, true, BlockchainEventType.DISPUTE_CLOSED),
+
+
+    /* ========== WITHDRAWN CHILD STATES ========== */
+    WITHDRAWN_CUSTOMER(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_CUSTOMER),
+    WITHDRAWN_PLAINTIFF(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_PLAINTIFF),
+    WITHDRAWN_RESPONDER(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_RESPONDER),
+    WITHDRAWN_SUB_INSTITUTION(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_BY_SUB_INSTITUTION),
+    WITHDRAWN_ARBITRATION(Phase.CLOSURE, true, BlockchainEventType.WITHDRAWN_DURING_ARBITRATION);
 
     private final Phase phase;
     private final Set<DisputeState> nextStates;
@@ -70,136 +86,180 @@ public enum DisputeState {
     }
 
     static {
-        /* ---- Phase 1: Bootstrap ---- */
+        /* ========== BUSINESS TRANSITIONS ========== */
+
+        /* ---- Initialization ---- */
         BOOTSTRAP_DISPUTE_CONTEXT.nextStates.addAll(EnumSet.of(
                 AWAITING_EVIDENCE_VERIFICATION,
-                AWAITING_DEFENDANT_VERIFICATION
+                AWAITING_RESPONDER_VERIFICATION
         ));
 
-        /* ---- Phase 2: Evidence Verification ---- */
+        /* ---- Evidence Verification ---- */
         AWAITING_EVIDENCE_VERIFICATION.nextStates.addAll(EnumSet.of(
                 EVIDENCE_VERIFIED,
                 EVIDENCE_REJECTED,
                 AWAITING_MANUAL_EVIDENCE_REVIEW,
-                WITHDRAWN_CUSTOMER,
                 EXPIRED
         ));
+
         AWAITING_MANUAL_EVIDENCE_REVIEW.nextStates.addAll(EnumSet.of(
                 EVIDENCE_VERIFIED,
                 EVIDENCE_REJECTED,
-                WITHDRAWN_CUSTOMER,
                 EXPIRED
-        ));
-        EVIDENCE_VERIFIED.nextStates.addAll(EnumSet.of(
-                AWAITING_PLAINTIFF_VERIFICATION,
-                WITHDRAWN_CUSTOMER,
-                EXPIRED
-        ));
-        EVIDENCE_REJECTED.nextStates.addAll(EnumSet.of(
-                CLOSED,
-                WITHDRAWN_CUSTOMER
         ));
 
-        /* ---- Phase 3: Party Verification ---- */
+        EVIDENCE_VERIFIED.nextStates.addAll(EnumSet.of(
+                AWAITING_PLAINTIFF_VERIFICATION,
+                EXPIRED
+        ));
+
+        EVIDENCE_REJECTED.nextStates.addAll(EnumSet.of(
+                CLOSED
+        ));
+
+        /* ---- Party Verification ---- */
         AWAITING_PLAINTIFF_VERIFICATION.nextStates.addAll(EnumSet.of(
                 PLAINTIFF_VERIFIED,
                 PLAINTIFF_DECLINED,
-                WITHDRAWN_PLAINTIFF,
                 EXPIRED
         ));
+
         PLAINTIFF_VERIFIED.nextStates.addAll(EnumSet.of(
-                AWAITING_DEFENDANT_VERIFICATION,
-                WITHDRAWN_PLAINTIFF,
+                AWAITING_RESPONDER_VERIFICATION,
                 EXPIRED
         ));
+
         PLAINTIFF_DECLINED.nextStates.addAll(EnumSet.of(
                 CLOSED,
-                ARBITRATION_PROCESSOR_AWAITING_RESPONSE,
-                WITHDRAWN_PLAINTIFF
+                ARBITRATION_PROCESSOR_AWAITING_RESPONSE
         ));
 
-        AWAITING_DEFENDANT_VERIFICATION.nextStates.addAll(EnumSet.of(
-                DEFENDANT_VERIFIED,
-                DEFENDANT_DECLINED,
-                WITHDRAWN_DEFENDANT,
+        AWAITING_RESPONDER_VERIFICATION.nextStates.addAll(EnumSet.of(
+                RESPONDER_VERIFIED,
+                RESPONDER_DECLINED,
                 EXPIRED
         ));
-        DEFENDANT_VERIFIED.nextStates.addAll(EnumSet.of(
+
+        RESPONDER_VERIFIED.nextStates.addAll(EnumSet.of(
                 CLOSED,
                 EXPIRED
         ));
-        DEFENDANT_DECLINED.nextStates.addAll(EnumSet.of(
-                ARBITRATION_PROCESSOR_AWAITING_RESPONSE,
-                WITHDRAWN_DEFENDANT
+
+        RESPONDER_DECLINED.nextStates.addAll(EnumSet.of(
+                ARBITRATION_PROCESSOR_AWAITING_RESPONSE
         ));
 
-        /* ---- Phase 4: Arbitration Processor ---- */
+        /* ---- Arbitration ---- */
         ARBITRATION_PROCESSOR_AWAITING_RESPONSE.nextStates.addAll(EnumSet.of(
                 ARBITRATION_PROCESSOR_RESOLVED_PLAINTIFF_FAVOR,
-                ARBITRATION_PROCESSOR_RESOLVED_DEFENDANT_FAVOR,
+                ARBITRATION_PROCESSOR_RESOLVED_RESPONDER_FAVOR,
                 ARBITRATION_PROCESSOR_RESOLVED_AMBIGUOUS,
                 ARBITRATION_PROCESSOR_UNREACHABLE,
-                WITHDRAWN_ARBITRATION,
                 EXPIRED
         ));
+
         ARBITRATION_PROCESSOR_RESOLVED_PLAINTIFF_FAVOR.nextStates.addAll(EnumSet.of(
-                AUTHORITY_DEFENDANT_ESCALATED,
-                CLOSED,
-                WITHDRAWN_ARBITRATION
+                AUTHORITY_RESPONDER_ESCALATED,
+                CLOSED
         ));
-        ARBITRATION_PROCESSOR_RESOLVED_DEFENDANT_FAVOR.nextStates.addAll(EnumSet.of(
+
+        ARBITRATION_PROCESSOR_RESOLVED_RESPONDER_FAVOR.nextStates.addAll(EnumSet.of(
                 AUTHORITY_PLAINTIFF_ESCALATED,
-                CLOSED,
-                WITHDRAWN_ARBITRATION
+                CLOSED
         ));
+
         ARBITRATION_PROCESSOR_RESOLVED_AMBIGUOUS.nextStates.addAll(EnumSet.of(
                 ARBITRATION_AWAITING_MANUAL_REVIEW,
                 AUTHORITY_SYSTEM_ESCALATED,
                 CLOSED
         ));
+
         ARBITRATION_PROCESSOR_UNREACHABLE.nextStates.addAll(EnumSet.of(
                 ARBITRATION_AWAITING_MANUAL_REVIEW,
                 AUTHORITY_SYSTEM_ESCALATED,
                 EXPIRED
         ));
 
-        /* ---- Phase 5: Manual Arbitration Review ---- */
         ARBITRATION_AWAITING_MANUAL_REVIEW.nextStates.addAll(EnumSet.of(
                 ARBITRATION_MANUAL_RESOLVED_PLAINTIFF_FAVOR,
-                ARBITRATION_MANUAL_RESOLVED_DEFENDANT_FAVOR,
+                ARBITRATION_MANUAL_RESOLVED_RESPONDER_FAVOR,
                 ARBITRATION_MANUAL_RESOLVED_AMBIGUOUS,
                 EXPIRED
         ));
+
         ARBITRATION_MANUAL_RESOLVED_PLAINTIFF_FAVOR.nextStates.addAll(EnumSet.of(
                 AUTHORITY_PLAINTIFF_ESCALATED,
-                CLOSED,
-                WITHDRAWN_ARBITRATION
+                CLOSED
         ));
-        ARBITRATION_MANUAL_RESOLVED_DEFENDANT_FAVOR.nextStates.addAll(EnumSet.of(
-                AUTHORITY_DEFENDANT_ESCALATED,
-                CLOSED,
-                WITHDRAWN_ARBITRATION
+
+        ARBITRATION_MANUAL_RESOLVED_RESPONDER_FAVOR.nextStates.addAll(EnumSet.of(
+                AUTHORITY_RESPONDER_ESCALATED,
+                CLOSED
         ));
+
         ARBITRATION_MANUAL_RESOLVED_AMBIGUOUS.nextStates.addAll(EnumSet.of(
                 AUTHORITY_SYSTEM_ESCALATED,
                 CLOSED
         ));
 
-        /* ---- Phase 6: Authority Escalation ---- */
+        /* ---- Authority Escalation ---- */
         AUTHORITY_PLAINTIFF_ESCALATED.nextStates.addAll(EnumSet.of(CLOSED));
-        AUTHORITY_DEFENDANT_ESCALATED.nextStates.addAll(EnumSet.of(CLOSED));
+        AUTHORITY_RESPONDER_ESCALATED.nextStates.addAll(EnumSet.of(CLOSED));
         AUTHORITY_SYSTEM_ESCALATED.nextStates.addAll(EnumSet.of(CLOSED));
 
-        /* ---- Phase 7: Withdrawals ---- */
+        /* ---- Withdrawals ---- */
         WITHDRAWN_CUSTOMER.nextStates.addAll(EnumSet.of(CLOSED));
-        WITHDRAWN_SUBDOMAIN.nextStates.addAll(EnumSet.of(CLOSED));
         WITHDRAWN_PLAINTIFF.nextStates.addAll(EnumSet.of(CLOSED));
-        WITHDRAWN_DEFENDANT.nextStates.addAll(EnumSet.of(CLOSED));
+        WITHDRAWN_RESPONDER.nextStates.addAll(EnumSet.of(CLOSED));
         WITHDRAWN_ARBITRATION.nextStates.addAll(EnumSet.of(CLOSED));
 
-        /* ---- Phase 8: Closure ---- */
+        /* ---- Expiration ---- */
         EXPIRED.nextStates.addAll(EnumSet.of(CLOSED));
+
+        /* ---- Terminal ---- */
+        TERMINAL.nextStates.addAll(EnumSet.of(CLOSED));
         CLOSED.nextStates.addAll(EnumSet.noneOf(DisputeState.class));
+    }
+
+    /* ========== HELPER METHODS ========== */
+
+    public boolean isActiveChild() {
+        return getAllActiveChildren().contains(this);
+    }
+
+    public boolean isWithdrawnChild() {
+        return getAllWithdrawnChildren().contains(this);
+    }
+
+    public boolean isTerminalChild() {
+        return getAllTerminalChildren().contains(this);
+    }
+
+    public static Set<DisputeState> getAllActiveChildren() {
+        return EnumSet.of(
+                AWAITING_EVIDENCE_VERIFICATION, AWAITING_MANUAL_EVIDENCE_REVIEW,
+                EVIDENCE_VERIFIED, EVIDENCE_REJECTED,
+                AWAITING_PLAINTIFF_VERIFICATION, PLAINTIFF_VERIFIED, PLAINTIFF_DECLINED,
+                AWAITING_RESPONDER_VERIFICATION, RESPONDER_VERIFIED, RESPONDER_DECLINED,
+                ARBITRATION_PROCESSOR_AWAITING_RESPONSE, ARBITRATION_PROCESSOR_RESOLVED_PLAINTIFF_FAVOR,
+                ARBITRATION_PROCESSOR_RESOLVED_RESPONDER_FAVOR, ARBITRATION_PROCESSOR_RESOLVED_AMBIGUOUS,
+                ARBITRATION_PROCESSOR_UNREACHABLE, ARBITRATION_AWAITING_MANUAL_REVIEW,
+                ARBITRATION_MANUAL_RESOLVED_PLAINTIFF_FAVOR, ARBITRATION_MANUAL_RESOLVED_RESPONDER_FAVOR,
+                ARBITRATION_MANUAL_RESOLVED_AMBIGUOUS, AUTHORITY_PLAINTIFF_ESCALATED,
+                AUTHORITY_RESPONDER_ESCALATED, AUTHORITY_SYSTEM_ESCALATED,
+                EXPIRED
+        );
+    }
+
+    public static Set<DisputeState> getAllTerminalChildren() {
+        return EnumSet.of(CLOSED); // Only CLOSED is direct child of TERMINAL
+    }
+
+    public static Set<DisputeState> getAllWithdrawnChildren() {
+        return EnumSet.of(
+                WITHDRAWN_CUSTOMER, WITHDRAWN_PLAINTIFF,
+                WITHDRAWN_RESPONDER, WITHDRAWN_ARBITRATION
+        );
     }
 
     public Phase getPhase() { return phase; }
@@ -209,6 +269,7 @@ public enum DisputeState {
 
     public enum Phase {
         INITIALIZATION,
+        ACTIVE,
         EVIDENCE_VERIFICATION,
         PARTY_VERIFICATION,
         ARBITRATION,
@@ -223,23 +284,24 @@ public enum DisputeState {
         EVIDENCE_REJECTED,
         PLAINTIFF_VERIFIED,
         PLAINTIFF_DECLINED,
-        DEFENDANT_VERIFIED,
-        DEFENDANT_DECLINED,
+        RESPONDER_VERIFIED,
+        RESPONDER_DECLINED,
         ARBITRATION_INITIATED,
         ARBITRATION_RULED_PLAINTIFF,
-        ARBITRATION_RULED_DEFENDANT,
+        ARBITRATION_RULED_RESPONDER,
         ARBITRATION_AMBIGUOUS,
         MANUAL_ARBITRATION_RULED_PLAINTIFF,
-        MANUAL_ARBITRATION_RULED_DEFENDANT,
+        MANUAL_ARBITRATION_RULED_RESPONDER,
         MANUAL_ARBITRATION_AMBIGUOUS,
         AUTHORITY_ESCALATED_PLAINTIFF,
-        AUTHORITY_ESCALATED_DEFENDANT,
+        AUTHORITY_ESCALATED_RESPONDER,
         AUTHORITY_ESCALATED_SYSTEM,
         WITHDRAWN_BY_CUSTOMER,
-        WITHDRAWN_BY_SUBDOMAIN,
         WITHDRAWN_BY_PLAINTIFF,
-        WITHDRAWN_BY_DEFENDANT,
+        WITHDRAWN_BY_RESPONDER,
         WITHDRAWN_DURING_ARBITRATION,
+
+        WITHDRAWN_BY_SUB_INSTITUTION,
         DISPUTE_EXPIRED,
         DISPUTE_CLOSED
     }
