@@ -41,6 +41,7 @@ public class Identity extends BaseEntity implements DisableAble {
         system.setDisabled(false);
         system.setDomainCode(SYSTEM_DOMAINCODE);
         system.setDomainType(DomainType.SYSTEM);
+        system.setIdentityUuid("<UUID>");
 
         return system;
     }

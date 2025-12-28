@@ -1,10 +1,9 @@
 package com.netra.commons.models;
 
 import com.netra.commons.contracts.Disputant;
-import com.netra.commons.enums.ApplicationChannel;
-import com.netra.commons.enums.DisputeMode;
-import com.netra.commons.enums.DisputeState;
+import com.netra.commons.enums.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +11,18 @@ import java.util.List;
 public class Dispute extends BaseEntity {
 
         private String logCode; // generate on DB
-        private Transaction transaction;
+        private OtherTransactionInfo otherTransactionInfo;
 
         private LocalDateTime disputeMarkedLegitTime; // applicable only for user-raised dispute, marked when issuer verified
         private DisputeState currentState;
         private DisputeState previousState;
+
+        private LocalDateTime transactionDate;
+        private BigDecimal transactionAmount;
+
+        private TransactionAction transactionAction;
+        private PaymentRail transactionPaymentRail;
+        private TransactionInstrument  transactionInstrument;
 
         private ApplicationChannel createdVia;
         private Disputant createdBy;
@@ -27,6 +33,8 @@ public class Dispute extends BaseEntity {
         private String merchantCode;
         private String beneficiaryCode;
         private String switcherCode;
+
+        private String billerCode;
 
         private DisputeMode disputeMode;
         private boolean locked;
@@ -52,8 +60,8 @@ public class Dispute extends BaseEntity {
 
         /* ---------------------- GETTERS/SETTERS ---------------------- */
 
-        public Transaction getTransaction() { return transaction; }
-        public void setTransaction(Transaction transaction) { this.transaction = transaction; }
+        public OtherTransactionInfo getTransaction() { return otherTransactionInfo; }
+        public void setTransaction(OtherTransactionInfo otherTransactionInfo) { this.otherTransactionInfo = otherTransactionInfo; }
 
         public LocalDateTime getDisputeMarkedLegitTime() { return disputeMarkedLegitTime; }
         public void setDisputeMarkedLegitTime(LocalDateTime disputeMarkedLegitTime) {
@@ -136,5 +144,61 @@ public class Dispute extends BaseEntity {
         public void evaluateOnUsFlag() {
                 this.onUsTransaction = (plaintiffInstitutionCode != null
                         && plaintiffInstitutionCode.equalsIgnoreCase(defendantInstitutionCode));
+        }
+
+        public String getBillerCode() {
+                return billerCode;
+        }
+
+        public void setBillerCode(String billerCode) {
+                this.billerCode = billerCode;
+        }
+
+        public OtherTransactionInfo getOtherTransactionInfo() {
+                return otherTransactionInfo;
+        }
+
+        public void setOtherTransactionInfo(OtherTransactionInfo otherTransactionInfo) {
+                this.otherTransactionInfo = otherTransactionInfo;
+        }
+
+        public LocalDateTime getTransactionDate() {
+                return transactionDate;
+        }
+
+        public void setTransactionDate(LocalDateTime transactionDate) {
+                this.transactionDate = transactionDate;
+        }
+
+        public BigDecimal getTransactionAmount() {
+                return transactionAmount;
+        }
+
+        public void setTransactionAmount(BigDecimal transactionAmount) {
+                this.transactionAmount = transactionAmount;
+        }
+
+        public TransactionAction getTransactionAction() {
+                return transactionAction;
+        }
+
+        public void setTransactionAction(TransactionAction transactionAction) {
+                this.transactionAction = transactionAction;
+        }
+
+        public PaymentRail getTransactionPaymentRail() {
+                return transactionPaymentRail;
+        }
+
+        public void setTransactionPaymentRail(PaymentRail transactionPaymentRail) {
+                this.transactionPaymentRail = transactionPaymentRail;
+        }
+
+        public TransactionInstrument getTransactionInstrument() {
+                return transactionInstrument;
+        }
+
+        public void setTransactionInstrument(TransactionInstrument transactionInstrument) {
+                this.transactionInstrument = transactionInstrument;
         }
 }

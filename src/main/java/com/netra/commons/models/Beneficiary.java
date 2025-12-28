@@ -12,7 +12,9 @@ public class Beneficiary {
 
     public enum BeneficiaryType {
         INDIVIDUAL,
-        MERCHANT
+        MERCHANT,
+        BILLER,
+        TSA//Treasury single account[goverment bills]
     }
 
     @NotNull(message = "Beneficiary Account type is required")

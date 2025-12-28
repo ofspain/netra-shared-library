@@ -11,14 +11,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class TransactionType extends BaseEntity implements Nameable, DisableAble {
-
-    @NotBlank
-    private String name;     // e.g., "POS Purchase", "Agency Banking Withdrawal"
-
-    private Boolean disabled = false;
-
-    private String description;
+public class TransactionType{
 
     // what the transaction is doing (intent)
     @NotNull
@@ -31,14 +24,6 @@ public class TransactionType extends BaseEntity implements Nameable, DisableAble
     // what was used to transact the transaction
     @NotNull
     private TransactionInstrument instrument;
-
-    // unique internal usage
-    @NotBlank
-    private String code;
-
-    // unique external code (CBN/NIBSS) if applicable, can be null
-
-    private String industryCode;
 }
 
 //{

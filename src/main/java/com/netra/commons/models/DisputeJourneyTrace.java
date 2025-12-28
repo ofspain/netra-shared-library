@@ -1,46 +1,46 @@
 package com.netra.commons.models;
 
-import com.netra.commons.contracts.BlockchainAuditable;
 import com.netra.commons.enums.DisputeState;
 
 import java.time.LocalDateTime;
 
-public class DisputeJourneyTrace extends BaseEntity implements BlockchainAuditable {
+public class DisputeJourneyTrace extends BaseEntity{// implements BlockchainAuditable {
     private String disputeId;
     private DisputeState fromState;
     private DisputeState toState;
     private LocalDateTime transitionTime;
 
     private String initiatedBy;       // e.g. ISSUER, ACQUIRER, SYSTEM
-    private String initiatedByCode;
-    private Long initiatedById;
+    private String initiatedByDomainCode;
+    private String initiatedByUUID;
+    private String initiatedByDomainType;
 
     private String reason;            // e.g. "Issuer Verified Funds"
     private String applicationChannel;// e.g. API, PORTAL
 
-    private String currentHash;       // local chain hash
-    private String previousHash;
-    private String auditTrace;        // can store serialized JSON of the trace
-
-    private String digitalSignature;  // optional signature
-    private String aptosTxnHash;      // <-- NEW: on-chain transaction reference
-    private String aptosEventRef;     // <-- NEW: event or proof reference
-
-    public String getAptosEventRef() {
-        return aptosEventRef;
-    }
-
-    public String getAptosTxnHash(){
-        return aptosTxnHash;
-    }
-
-    public void setAptosEventRef(String aptosEventRef) {
-        this.aptosEventRef = aptosEventRef;
-    }
-
-    public void setAptosTxnHash(String aptosTxnHash) {
-        this.aptosTxnHash = aptosTxnHash;
-    }
+//    private String currentHash;       // local chain hash
+//    private String previousHash;
+//    private String auditTrace;        // can store serialized JSON of the trace
+//
+//    private String digitalSignature;  // optional signature
+//    private String aptosTxnHash;      // <-- NEW: on-chain transaction reference
+//    private String aptosEventRef;     // <-- NEW: event or proof reference
+//
+//    public String getAptosEventRef() {
+//        return aptosEventRef;
+//    }
+//
+//    public String getAptosTxnHash(){
+//        return aptosTxnHash;
+//    }
+//
+//    public void setAptosEventRef(String aptosEventRef) {
+//        this.aptosEventRef = aptosEventRef;
+//    }
+//
+//    public void setAptosTxnHash(String aptosTxnHash) {
+//        this.aptosTxnHash = aptosTxnHash;
+//    }
 
     public String getDisputeId() {
         return disputeId;
@@ -98,57 +98,65 @@ public class DisputeJourneyTrace extends BaseEntity implements BlockchainAuditab
         this.applicationChannel = applicationChannel;
     }
 
-    @Override
-    public String getCurrentHash() {
-        return currentHash;
+//    @Override
+//    public String getCurrentHash() {
+//        return currentHash;
+//    }
+//
+//    public void setCurrentHash(String currentHash) {
+//        this.currentHash = currentHash;
+//    }
+//
+//    @Override
+//    public String getPreviousHash() {
+//        return previousHash;
+//    }
+//
+//    public void setPreviousHash(String previousHash) {
+//        this.previousHash = previousHash;
+//    }
+//
+//    @Override
+//    public String getAuditTrace() {
+//        return auditTrace;
+//    }
+//
+//    public void setAuditTrace(String auditTrace) {
+//        this.auditTrace = auditTrace;
+//    }
+//
+//    @Override
+//    public String getDigitalSignature() {
+//        return digitalSignature;
+//    }
+//
+//    public void setDigitalSignature(String digitalSignature) {
+//        this.digitalSignature = digitalSignature;
+//    }
+
+    public String getInitiatedByDomainCode() {
+        return initiatedByDomainCode;
     }
 
-    public void setCurrentHash(String currentHash) {
-        this.currentHash = currentHash;
+    public void setInitiatedByDomainCode(String initiatedByDomainCode) {
+        this.initiatedByDomainCode = initiatedByDomainCode;
     }
 
-    @Override
-    public String getPreviousHash() {
-        return previousHash;
+    public String getInitiatedByUUID() {
+        return initiatedByUUID;
     }
 
-    public void setPreviousHash(String previousHash) {
-        this.previousHash = previousHash;
+    public void setInitiatedByUUID(String initiatedByUUID) {
+        this.initiatedByUUID = initiatedByUUID;
     }
 
-    @Override
-    public String getAuditTrace() {
-        return auditTrace;
+    public void setInitiatedByDomainType(String initiatedByDomainType) {
+        this.initiatedByDomainType = initiatedByDomainType;
     }
 
-    public void setAuditTrace(String auditTrace) {
-        this.auditTrace = auditTrace;
+    public String getInitiatedByDomainType() {
+        return initiatedByDomainType;
     }
 
-    @Override
-    public String getDigitalSignature() {
-        return digitalSignature;
-    }
-
-    public void setDigitalSignature(String digitalSignature) {
-        this.digitalSignature = digitalSignature;
-    }
-
-    public String getInitiatedByCode() {
-        return initiatedByCode;
-    }
-
-    public void setInitiatedByCode(String initiatedByCode) {
-        this.initiatedByCode = initiatedByCode;
-    }
-
-    public Long getInitiatedById() {
-        return initiatedById;
-    }
-
-    public void setInitiatedById(Long initiatedById) {
-        this.initiatedById = initiatedById;
-    }
-
-//  private String digitalSignature; // Optional - for cryptographic proof
+    //  private String digitalSignature; // Optional - for cryptographic proof
 }

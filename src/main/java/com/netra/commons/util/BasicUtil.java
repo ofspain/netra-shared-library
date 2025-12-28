@@ -142,4 +142,14 @@ public class BasicUtil {
         return withdrawalRoutingMap;
     }
 
+    public static boolean isValidUuid(String value) {
+        try {
+            UUID.fromString(value);
+            return true;
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return false;
+        }
+    }
+
+
 }
